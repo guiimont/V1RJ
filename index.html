@@ -4,29 +4,33 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>V1 RJ 25K 2026 — Inscrições</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 
-/* --- Reggae variables + base colors --- */
-:root {
-  --reggae-green: #28a745;
-  --reggae-yellow: #ffc107;
-  --reggae-red: #dc3545;
-  --ocean-deep: #060F1E;
+:root{
+  --reggae-green:#28a745;
+  --reggae-yellow:#ffc107;
+  --reggae-red:#dc3545;
+
+  --ocean-deep:#060F1E;
+  --ocean-mid:#0A2540;
+  --wave:#00C2D4;
+  --sand:#E8D5A3;
+  --coral:#F4623A;
 }
 
-body{
-  font-family:'Nunito Sans',sans-serif;
-  background:var(--ocean-deep);
-  color:#EEF9FF;
-  overflow-x:hidden;
-}
+body{font-family:'Nunito Sans',sans-serif;background:var(--ocean-deep);color:#EEF9FF;overflow-x:hidden}
 
 /* ── Padrão de ondas polinésias ───────────────────────── */
-.poly{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cpath d='M0 20 Q10 0 20 20 Q30 40 40 20 Q50 0 60 20 Q70 40 80 20' fill='none' stroke='%2300C2D4' stroke-width='0.55' stroke-opacity='0.1'/%3E%3Cpath d='M0 32 Q10 12 20 32 Q30 52 40 32 Q50 12 60 32 Q70 52 80 32' fill='none' stroke='%23E8D5A3' stroke-width='0.3' stroke-opacity='0.05'/%3E%3C/svg%3E");background-size:80px 40px}
+.poly{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cpath d='M0 20 Q10 0 20 20 Q30 40 40 20 Q50 0 60 20 Q70 40 80 20' fill='none' stroke='%2300C2D4' stroke-width='0.55' stroke-opacity='0.1'/%3E%3Cpath d='M0 32 Q10 12 20 32 Q30 52 40 32 Q50 12 60 32 Q70 52 80 32' fill='none' stroke='%23E8D5A3' stroke-width='0.3' stroke-opacity='0.05'/%3E%3C/svg%3E");
+  background-size:80px 40px
+}
 
 /* ── Stars ──────────────────────────────────────────────── */
 .star{position:absolute;border-radius:50%;background:#E8D5A3;animation:twinkle var(--d) var(--dl) infinite}
@@ -38,31 +42,74 @@ body{
 @keyframes wv{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ── Navbar ─────────────────────────────────────────────── */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:rgba(6,15,30,.85);backdrop-filter:blur(18px);border-bottom:1px solid rgba(0,194,212,.1)}
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:64px;padding:0 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,15,30,.85);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(0,194,212,.1)
+}
+.nav a{
+  font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(238,249,255,.4);text-decoration:none;
+  transition:color .18s
+}
+.nav a:hover{color:#4DD9E8}
+.nav .brand{
+  font-family:'Teko',sans-serif;
+  letter-spacing:.12em;
+  color:rgba(232,213,163,.95);
+  font-size:1.05rem;
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.brand-dot{
+  width:8px;height:8px;border-radius:99px;
+  background:linear-gradient(90deg,var(--reggae-green),var(--reggae-yellow),var(--reggae-red));
+  box-shadow:0 0 0 4px rgba(244,98,58,.08);
+}
 
 /* ── Hero ───────────────────────────────────────────────── */
-.hero{min-height:100svh;position:relative;overflow:hidden;background:linear-gradient(170deg,#060F1E 0%,#0A2540 50%,#060F1E 100%);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero{
+  min-height:100svh;position:relative;overflow:hidden;
+  background:linear-gradient(170deg,var(--ocean-deep) 0%,var(--ocean-mid) 50%,var(--ocean-deep) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center
+}
 
 /* ── Botões ─────────────────────────────────────────────── */
-.btn-p{background:#F4623A;color:#fff;font-family:'Teko',sans-serif;font-size:1.2rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:12px 34px 10px;border-radius:6px;border:none;cursor:pointer;transition:background .18s,transform .15s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-p{
+  background:var(--coral);color:#fff;font-family:'Teko',sans-serif;
+  font-size:1.2rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:12px 34px 10px;border-radius:6px;border:none;cursor:pointer;
+  transition:background .18s,transform .15s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px
+}
 .btn-p:hover{background:#D94E28;transform:translateY(-2px)}
 .btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-g{background:transparent;color:#00C2D4;border:1px solid rgba(0,194,212,.35);font-family:'Teko',sans-serif;font-size:1rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:10px 24px 8px;border-radius:6px;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-.btn-g:hover{border-color:#00C2D4;color:#4DD9E8}
+
+.btn-g{
+  background:transparent;color:var(--wave);
+  border:1px solid rgba(0,194,212,.35);
+  font-family:'Teko',sans-serif;font-size:1rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:10px 24px 8px;border-radius:6px;cursor:pointer;
+  transition:all .18s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:6px
+}
+.btn-g:hover{border-color:var(--wave);color:#4DD9E8}
 
 /* ── Countdown ──────────────────────────────────────────── */
 .cd{background:rgba(0,194,212,.06);border:1px solid rgba(0,194,212,.18);border-radius:10px;padding:14px 18px 10px;text-align:center;min-width:70px}
-.cdn{font-family:'Teko',sans-serif;font-size:2.6rem;font-weight:600;color:#E8D5A3;line-height:1;display:block}
+.cdn{font-family:'Teko',sans-serif;font-size:2.6rem;font-weight:600;color:var(--sand);line-height:1;display:block}
 .cdl{font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,194,212,.5)}
 
 /* ── Labels tipográficos ────────────────────────────────── */
-.sl{font-size:.67rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#F4623A;margin-bottom:10px}
-.st{font-family:'Teko',sans-serif;font-size:clamp(2.5rem,6vw,4rem);font-weight:600;line-height:.95;text-transform:uppercase;color:#E8D5A3}
-.cbar{width:50px;height:3px;background:linear-gradient(90deg,#F4623A,transparent);border-radius:2px}
+.sl{font-size:.67rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--coral);margin-bottom:10px}
+.st{font-family:'Teko',sans-serif;font-size:clamp(2.5rem,6vw,4rem);font-weight:600;line-height:.95;text-transform:uppercase;color:var(--sand)}
+.cbar{width:50px;height:3px;background:linear-gradient(90deg,var(--coral),transparent);border-radius:2px}
 
 /* ── Cards diferenciais ─────────────────────────────────── */
 .dc{background:rgba(255,255,255,.03);border:1px solid rgba(0,194,212,.11);border-radius:14px;padding:24px 20px;position:relative;overflow:hidden;transition:border-color .2s,background .2s}
-.dc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#F4623A,transparent);opacity:0;transition:opacity .2s}
+.dc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--coral),transparent);opacity:0;transition:opacity .2s}
 .dc:hover{border-color:rgba(0,194,212,.26);background:rgba(255,255,255,.05)}
 .dc:hover::before{opacity:1}
 .dcn{font-family:'Teko',sans-serif;font-size:4rem;font-weight:700;color:rgba(0,194,212,.08);line-height:1;position:absolute;top:10px;right:14px}
@@ -73,7 +120,7 @@ body{
 .cc.dest{background:rgba(244,98,58,.07);border-color:rgba(244,98,58,.22)}
 
 /* ═══════════════════════════════════════════════════════════
-   FORMULÁRIO — Sem fricção estilo "Tá na Mão!"
+   FORMULÁRIO
 ═══════════════════════════════════════════════════════════ */
 .form-outer{background:rgba(10,37,64,.7);border:1px solid rgba(0,194,212,.14);border-radius:20px;backdrop-filter:blur(20px);padding:32px}
 
@@ -82,25 +129,25 @@ body{
 
 /* Inputs */
 .fi{background:rgba(255,255,255,.06);border:1.5px solid rgba(0,194,212,.17);border-radius:8px;padding:10px 14px;width:100%;color:#EEF9FF;font-family:'Nunito Sans',sans-serif;font-size:.93rem;outline:none;transition:border-color .2s,background .2s;-webkit-appearance:none}
-.fi:focus{border-color:#00C2D4;background:rgba(0,194,212,.08)}
+.fi:focus{border-color:var(--wave);background:rgba(0,194,212,.08)}
 .fi::placeholder{color:rgba(238,249,255,.22)}
-.fi.err{border-color:#F4623A}
+.fi.err{border-color:var(--coral)}
 .fi.ok{border-color:#22c55e}
-select.fi option{background:#0A2540}
+select.fi option{background:var(--ocean-mid)}
 
 /* Erros */
-.fe{color:#F4623A;font-size:.75rem;margin-top:4px;display:none}
+.fe{color:var(--coral);font-size:.75rem;margin-top:4px;display:none}
 .fe.on{display:block}
 
 /* Seletor de camiseta visual */
 .shirt input{display:none}
 .shirt span{display:block;padding:8px 4px;border:1.5px solid rgba(0,194,212,.18);border-radius:7px;text-align:center;font-family:'Teko',sans-serif;font-size:.95rem;color:rgba(238,249,255,.45);cursor:pointer;transition:all .15s}
-.shirt input:checked+span{border-color:#F4623A;background:rgba(244,98,58,.14);color:#F4623A}
+.shirt input:checked+span{border-color:var(--coral);background:rgba(244,98,58,.14);color:var(--coral)}
 
 /* Toggle aluguel */
 .trow{display:flex;align-items:center;gap:14px;cursor:pointer;user-select:none}
 .ttr{width:44px;height:24px;background:rgba(255,255,255,.08);border:1.5px solid rgba(0,194,212,.2);border-radius:999px;position:relative;transition:background .25s;flex-shrink:0}
-.tth{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#00C2D4;transition:transform .25s}
+.tth{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--wave);transition:transform .25s}
 .trow input{display:none}
 .trow input:checked~.ttr{background:rgba(0,194,212,.18)}
 .trow input:checked~.ttr .tth{transform:translateX(20px)}
@@ -108,11 +155,23 @@ select.fi option{background:#0A2540}
 /* Step progress bar */
 .spb{display:flex;align-items:center;gap:6px;margin-bottom:20px}
 .sg{height:3px;flex:1;border-radius:2px;background:rgba(255,255,255,.08);transition:background .3s}
-.sg.done{background:#F4623A}
+.sg.done{background:var(--coral)}
 .sg.cur{background:rgba(244,98,58,.35)}
 
 /* Categoria badge */
-.cbg{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;background:rgba(244,98,58,.14);border:1px solid rgba(244,98,58,.28);font-family:'Teko',sans-serif;font-size:1.1rem;color:#F4623A;text-transform:uppercase;letter-spacing:.05em;animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
+.cbg{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 16px;border-radius:999px;
+  background:rgba(244,98,58,.14);border:1px solid rgba(244,98,58,.28);
+  font-family:'Teko',sans-serif;font-size:1.1rem;color:var(--coral);
+  text-transform:uppercase;letter-spacing:.05em;animation:pop .3s cubic-bezier(.34,1.56,.64,1)
+}
+.cbg::before{
+  content:'';
+  width:8px;height:8px;border-radius:99px;
+  background:var(--reggae-yellow);
+  box-shadow:0 0 0 3px rgba(255,193,7,.12);
+}
 @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 
 /* Resumo step 3 */
@@ -131,557 +190,693 @@ select.fi option{background:#0A2540}
 /* Loader */
 #ldr{position:fixed;inset:0;z-index:999;background:rgba(6,15,30,.9);backdrop-filter:blur(8px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 #ldr.on{display:flex}
-.spin{width:40px;height:40px;border-radius:50%;border:2.5px solid rgba(0,194,212,.2);border-top-color:#00C2D4;animation:spin .8s linear infinite}
+.spin{width:40px;height:40px;border-radius:50%;border:2.5px solid rgba(0,194,212,.2);border-top-color:var(--wave);animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── Footer ─────────────────────────────────────────────── */
-footer{background:#060F1E;border-top:1px solid rgba(0,194,212,.09);padding:40px 24px;text-align:center}
+footer{background:var(--ocean-deep);border-top:1px solid rgba(0,194,212,.09);padding:40px 24px;text-align:center}
 
 /* ── Responsivo ─────────────────────────────────────────── */
 @media(max-width:700px){
   .r2{grid-template-columns:1fr!important;gap:36px!important}
   .nl{display:none!important}
   .form-outer{padding:22px 16px}
-  .hero-logo{width:180px!important}
+  .hero-logo{width:200px!important}
 }
 </style>
 </head>
+
 <body>
 
 <!-- LOADER -->
-<div id="ldr"><div class="spin"></div><p id="lmsg" style="font-family:Teko,sans-serif;font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:#00C2D4;">Aguarde...</p></div>
+<div id="ldr">
+  <div class="spin"></div>
+  <p id="lmsg" style="font-family:Teko,sans-serif;font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:var(--wave);">Aguarde...</p>
+</div>
 
 <!-- NAVBAR -->
 <nav class="nav">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <img src="data:image/jpeg;base64,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" alt="V1 RJ 25K 2026" style="height:44px;width:auto;object-fit:contain;filter:brightness(1.1);" class="hero-logo"/>
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span id="evt-name">V1 RJ 25K</span>
   </div>
+
   <div style="display:flex;align-items:center;gap:22px;">
     <div class="nl" style="display:flex;gap:20px;">
-      <a href="#prova" style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(238,249,255,.4);text-decoration:none;" onmouseover="this.style.color='#4DD9E8'" onmouseout="this.style.color='rgba(238,249,255,.4)'">A Prova</a>
-      <a href="#percurso" style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(238,249,255,.4);text-decoration:none;" onmouseover="this.style.color='#4DD9E8'" onmouseout="this.style.color='rgba(238,249,255,.4)'">Percurso</a>
-      <a href="#categorias-sec" style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(238,249,255,.4);text-decoration:none;" onmouseover="this.style.color='#4DD9E8'" onmouseout="this.style.color='rgba(238,249,255,.4)'">Categorias</a>
-      <a href="admin.html" style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(244,98,58,.5);text-decoration:none;" onmouseover="this.style.color='#F4623A'" onmouseout="this.style.color='rgba(244,98,58,.5)'">Admin</a>
+      <a href="#prova">A Prova</a>
+      <a href="#percurso">Percurso</a>
+      <a href="#categorias-sec">Categorias</a>
+      <a href="regulamento.html">Regulamento</a>
+      <a href="admin.html" style="color:rgba(244,98,58,.5);">Admin</a>
     </div>
     <a href="#inscricao" class="btn-p" style="padding:9px 20px 7px;font-size:.88rem;">Inscreva-se</a>
   </div>
 </nav>
-​
+
 <!-- HERO -->
 <section class="hero poly" id="inicio">
-<div id="stars" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;"></div>
-<!-- Manta decorativa -->
-<div aria-hidden="true" style="position:absolute;top:8%;right:2%;opacity:.05;transform:rotate(-18deg);pointer-events:none;">
-<svg width="280" height="175" viewBox="0 0 280 175" fill="#00C2D4">
-<path d="M140 88 C70 18 10 52 0 88 C10 124 70 158 140 88Z"/>
-<path d="M140 88 C210 18 270 52 280 88 C270 124 210 158 140 88Z"/>
-<path d="M140 88 C136 72 132 54 140 36 C148 54 144 72 140 88Z" fill="#0A2540"/>
-<ellipse cx="130" cy="78" rx="4" ry="5" fill="#0A2540"/>
-<ellipse cx="150" cy="78" rx="4" ry="5" fill="#0A2540"/>
-<path d="M140 88 Q142 114 138 142 Q140 150 142 142 Q138 114 140 88Z"/>
-</svg>
-</div>
-<!-- Reflexo de água -->
-<div aria-hidden="true" style="position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);width:700px;height:280px;background:radial-gradient(ellipse,rgba(0,194,212,.11) 0%,transparent 70%);pointer-events:none;"></div>
-<!-- Ondas -->
-<div aria-hidden="true" style="position:absolute;bottom:0;left:0;right:0;height:76px;overflow:hidden;">
-<svg style="position:absolute;bottom:0;width:200%;height:76px;" viewBox="0 0 2880 76" preserveAspectRatio="none" class="wa">
-<path d="M0 38 Q180 0 360 38 Q540 76 720 38 Q900 0 1080 38 Q1260 76 1440 38 Q1620 0 1800 38 Q1980 76 2160 38 Q2340 0 2520 38 Q2700 76 2880 38 L2880 76 L0 76Z" fill="#0A2540" fill-opacity=".55"/>
-</svg>
-<svg style="position:absolute;bottom:0;width:200%;height:76px;" viewBox="0 0 2880 76" preserveAspectRatio="none" class="wb">
-<path d="M0 48 Q120 16 240 48 Q360 80 480 48 Q600 16 720 48 Q840 80 960 48 Q1080 16 1200 48 Q1320 80 1440 48 Q1560 16 1680 48 Q1800 80 1920 48 Q2040 16 2160 48 Q2280 80 2400 48 Q2520 16 2640 48 Q2760 80 2880 48 L2880 76 L0 76Z" fill="#060F1E" fill-opacity=".9"/>
-</svg>
-</div>
-<!-- Conteúdo -->
-<div style="position:relative;z-index:2;text-align:center;padding:80px 16px 100px;">
-<!-- NOVO HEADER VISUAL (logo isolada + glow + faixa reggae) -->
-<header style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:12px;padding-bottom:22px;overflow:hidden;">
-<div style="position:relative;z-index:10;">
-<div style="position:absolute;inset:0;background:rgba(255,193,7,.20);filter:blur(40px);border-radius:999px;"></div>
-<!-- Mantive o mesmo logo base64 do seu arquivo -->
-<img
-src="data:image/jpeg;base64,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"
-alt="V1 RJ 25K"
-class="hero-logo"
-style="position:relative;width:260px;max-width:72vw;height:auto;object-fit:contain;border-radius:999px;border:4px solid #fff;box-shadow:0 25px 60px rgba(0,0,0,.45);filter:drop-shadow(0 0 32px rgba(0,194,212,.18)) brightness(1.05);"
-/>
-</div>
-<div style="display:flex;width:100%;height:8px;margin-top:22px;box-shadow:0 12px 30px rgba(0,0,0,.25);border-radius:6px;overflow:hidden;max-width:520px;">
-<div style="flex:1;background:var(--reggae-green)"></div>
-<div style="flex:1;background:var(--reggae-yellow)"></div>
-<div style="flex:1;background:var(--reggae-red)"></div>
-</div>
-</header>
-<!-- NOVO TÍTULO HERO (V1 RJ 25K colorido) -->
-<section style="position:relative;z-index:10;padding:0 16px;margin-top:-8px;margin-bottom:26px;">
-<div style="max-width:900px;margin:0 auto;text-align:center;">
-<h2 style="font-family:Teko,sans-serif;font-size:clamp(3.2rem,9vw,6rem);font-weight:800;letter-spacing:-.04em;text-transform:uppercase;font-style:italic;line-height:.9;margin-bottom:10px;">
-V1
-RJ
-25K
-</h2>
-<p style="font-size:clamp(1.05rem,2.2vw,1.5rem);font-weight:800;color:var(--reggae-yellow);margin-top:2px;letter-spacing:.18em;text-transform:uppercase;">
-O Desafio Final em Itaipu
-</p>
-</div>
-</section>
-<!-- Localização -->
-<div style="display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border:1px solid rgba(0,194,212,.2);border-radius:999px;background:rgba(0,194,212,.07);margin-bottom:28px;margin-top:8px;">
-<svg width="9" height="9" viewBox="0 0 24 24" fill="#F4623A"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
-Praia de Itaipu · Niterói · RJ
-</div>
-<!-- Frase âncora -->
-<p style="font-size:clamp(.9rem,2vw,1.05rem);font-weight:300;color:rgba(238,249,255,.55);max-width:420px;margin:0 auto 34px;line-height:1.8;letter-spacing:.02em;">
-Mar aberto. Vento real. Ondas de Itaipu.
+  <div id="stars" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;"></div>
 
-É aqui que o paddler descobre seus limites.
-</p>
-<!-- Countdown -->
-<div style="display:flex;gap:10px;justify-content:center;margin-bottom:36px;">
-<div class="cd">—dias</div>
-<div class="cd">—horas</div>
-<div class="cd">—min</div>
-<div class="cd">—seg</div>
-</div>
-<!-- CTAs -->
-<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;">
-<a href="#inscricao" class="btn-p">
-<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 12 20 22 4 22 4 12"/><polyline points="22 7 12 2 2 7"/><line x1="12" y1="22" x2="12" y2="7"/></svg>
-Garantir Inscrição
-</a>
-<a href="#prova" class="btn-g">Conhecer a Prova ↓</a>
-</div>
-<!-- Stats -->
-<div style="display:inline-flex;margin-top:48px;border:1px solid rgba(0,194,212,.12);border-radius:10px;overflow:hidden;backdrop-filter:blur(12px);background:rgba(6,15,30,.4);">
-<div style="padding:11px 24px;text-align:center;border-right:1px solid rgba(0,194,212,.1);">
-<div style="font-family:Teko,sans-serif;font-size:1.7rem;font-weight:600;color:#F4623A;line-height:1;">25km</div>
-<div style="font-size:.56rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,194,212,.4);margin-top:2px;">Distância</div>
-</div>
-<div style="padding:11px 24px;text-align:center;border-right:1px solid rgba(0,194,212,.1);">
-<div style="font-family:Teko,sans-serif;font-size:1.7rem;font-weight:600;color:#F4623A;line-height:1;">V1</div>
-<div style="font-size:.56rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,194,212,.4);margin-top:2px;">Individual</div>
-</div>
-<div style="padding:11px 24px;text-align:center;">
-<div style="font-family:Teko,sans-serif;font-size:1.7rem;font-weight:600;color:#F4623A;line-height:1;">X</div>
-<div style="font-size:.56rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,194,212,.4);margin-top:2px;">Edição</div>
-</div>
-</div>
-</div>
+  <!-- Manta decorativa -->
+  <div aria-hidden="true" style="position:absolute;top:8%;right:2%;opacity:.05;transform:rotate(-18deg);pointer-events:none;">
+    <svg width="280" height="175" viewBox="0 0 280 175" fill="var(--wave)">
+      <path d="M140 88 C70 18 10 52 0 88 C10 124 70 158 140 88Z"/>
+      <path d="M140 88 C210 18 270 52 280 88 C270 124 210 158 140 88Z"/>
+      <path d="M140 88 C136 72 132 54 140 36 C148 54 144 72 140 88Z" fill="#0A2540"/>
+      <ellipse cx="130" cy="78" rx="4" ry="5" fill="#0A2540"/>
+      <ellipse cx="150" cy="78" rx="4" ry="5" fill="#0A2540"/>
+      <path d="M140 88 Q142 114 138 142 Q140 150 142 142 Q138 114 140 88Z"/>
+    </svg>
+  </div>
+
+  <!-- Reflexo de água -->
+  <div aria-hidden="true" style="position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);width:700px;height:280px;background:radial-gradient(ellipse,rgba(0,194,212,.11) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <!-- Ondas -->
+  <div aria-hidden="true" style="position:absolute;bottom:0;left:0;right:0;height:76px;overflow:hidden;">
+    <svg style="position:absolute;bottom:0;width:200%;height:76px;" viewBox="0 0 2880 76" preserveAspectRatio="none" class="wa">
+      <path d="M0 38 Q180 0 360 38 Q540 76 720 38 Q900 0 1080 38 Q1260 76 1440 38 Q1620 0 1800 38 Q1980 76 2160 38 Q2340 0 2520 38 Q2700 76 2880 38 L2880 76 L0 76Z" fill="#0A2540" fill-opacity=".55"/>
+    </svg>
+    <svg style="position:absolute;bottom:0;width:200%;height:76px;" viewBox="0 0 2880 76" preserveAspectRatio="none" class="wb">
+      <path d="M0 48 Q120 16 240 48 Q360 80 480 48 Q600 16 720 48 Q840 80 960 48 Q1080 16 1200 48 Q1320 80 1440 48 Q1560 16 1680 48 Q1800 80 1920 48 Q2040 16 2160 48 Q2280 80 2400 48 Q2520 16 2640 48 Q2760 80 2880 48 L2880 76 L0 76Z" fill="#060F1E" fill-opacity=".9"/>
+    </svg>
+  </div>
+
+  <!-- Conteúdo -->
+  <div style="position:relative;z-index:2;text-align:center;padding:86px 16px 100px;">
+
+    <!-- Logo (apenas no HERO) -->
+    <img
+      src="assets/logo/logo-v1rj-2026.png"
+      alt="V1 RJ 25K 2026"
+      class="hero-logo"
+      style="width:320px;max-width:82vw;height:auto;object-fit:contain;margin:0 auto 14px;display:block;
+        filter:drop-shadow(0 10px 36px rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(0,194,212,.18));"
+    />
+
+    <!-- Status inscrições (dinâmico) -->
+    <div id="insc-pill" style="display:inline-flex;align-items:center;gap:10px;padding:7px 14px;border:1px solid rgba(0,194,212,.2);border-radius:999px;background:rgba(0,194,212,.07);margin-bottom:18px;">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--reggae-green);"></span>
+      <span id="insc-txt" style="font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,194,212,.85);">
+        Carregando informações…
+      </span>
+    </div>
+
+    <!-- Localização -->
+    <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border:1px solid rgba(0,194,212,.2);border-radius:999px;background:rgba(0,194,212,.07);margin-bottom:22px;">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="var(--coral)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+      <span style="font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--wave);">Praia de Itaipu · Niterói · RJ</span>
+    </div>
+
+    <!-- Frase âncora -->
+    <p style="font-size:clamp(.9rem,2vw,1.05rem);font-weight:300;color:rgba(238,249,255,.55);max-width:520px;margin:0 auto 32px;line-height:1.8;letter-spacing:.02em;">
+      Mar aberto. Vento real. Ondas de Itaipu.<br>
+      É aqui que o paddler descobre seus limites.
+    </p>
+
+    <!-- Countdown -->
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:36px;">
+      <div class="cd"><span class="cdn" id="cd-d">—</span><span class="cdl">dias</span></div>
+      <div class="cd"><span class="cdn" id="cd-h">—</span><span class="cdl">horas</span></div>
+      <div class="cd"><span class="cdn" id="cd-m">—</span><span class="cdl">min</span></div>
+      <div class="cd"><span class="cdn" id="cd-s">—</span><span class="cdl">seg</span></div>
+    </div>
+
+    <!-- CTAs -->
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;">
+      <a href="#inscricao" class="btn-p">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 12 20 22 4 22 4 12"/><polyline points="22 7 12 2 2 7"/><line x1="12" y1="22" x2="12" y2="7"/></svg>
+        Garantir Inscrição
+      </a>
+      <a href="regulamento.html" class="btn-g">Ler regulamento →</a>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:inline-flex;margin-top:48px;border:1px solid rgba(0,194,212,.12);border-radius:10px;overflow:hidden;backdrop-filter:blur(12px);background:rgba(6,15,30,.4);">
+      <div style="padding:11px 24px;text-align:center;border-right:1px solid rgba(0,194,212,.1);">
+        <div style="font-family:Teko,sans-serif;font-size:1.7rem;font-weight:600;color:var(--coral);line-height:1;">25km</div>
+        <div style="font-size:.56rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,194,212,.4);margin-top:2px;">Distância</div>
+      </div>
+      <div style="padding:11px 24px;text-align:center;border-right:1px solid rgba(0,194,212,.1);">
+        <div style="font-family:Teko,sans-serif;font-size:1.7rem;font-weight:600;color:var(--coral);line-height:1;">V1</div>
+        <div style="font-size:.56rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,194,212,.4);margin-top:2px;">Individual</div>
+      </div>
+      <div style="padding:11px 24px;text-align:center;">
+        <div style="font-family:Teko,sans-serif;font-size:1.7rem;font-weight:600;color:var(--coral);line-height:1;">IX</div>
+        <div style="font-size:.56rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,194,212,.4);margin-top:2px;">Edição</div>
+      </div>
+    </div>
+  </div>
 </section>
+
 <!-- A PROVA -->
 <section style="background:#060F1E;padding:90px 24px;" id="prova">
-<div style="max-width:1020px;margin:0 auto;">
-<div class="r2" style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;">
-<div>
-<p class="sl">A Prova</p>
-<h2 class="st" style="margin-bottom:16px;">Itaipu é
-diferente.</h2>
-<div class="cbar" style="margin-bottom:20px;"></div>
-<p style="font-size:.95rem;line-height:1.85;color:rgba(238,249,255,.55);margin-bottom:14px;">Não é uma baía fechada. Não é um lago. É o Oceano Atlântico — com swell de sul, vento terral e corrente lateral. As mesmas condições que forjam os grandes paddlers do mundo.</p>
-<p style="font-size:.95rem;line-height:1.85;color:rgba(238,249,255,.55);">Uma prova de verdade, em condições de verdade. A V1 RJ 25K existe para celebrar quem escolhe o mar como parceiro — não como obstáculo.</p>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-<div class="dc"><div class="dcn">01</div><div class="ib"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#00C2D4" stroke-width="1.8" stroke-linecap="round"><path d="M2 12 Q6 8 10 12 Q14 16 18 12 Q20 10 22 12"/><path d="M2 17 Q6 13 10 17 Q14 21 18 17 Q20 15 22 17"/></svg></div><h3 style="font-family:Teko,sans-serif;font-size:1.1rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;letter-spacing:.04em;">Mar aberto</h3><p style="font-size:.78rem;color:rgba(238,249,255,.38);line-height:1.65;">Swell real, corrente e vento do Atlântico Sul.</p></div>
-<div class="dc"><div class="dcn">02</div><div class="ib"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#00C2D4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3 style="font-family:Teko,sans-serif;font-size:1.1rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;letter-spacing:.04em;">25km de glória</h3><p style="font-size:.78rem;color:rgba(238,249,255,.38);line-height:1.65;">A maior distância V1 individual do RJ.</p></div>
-<div class="dc"><div class="dcn">03</div><div class="ib"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#00C2D4" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="3"/><path d="M6 19v-1a6 6 0 0 1 12 0v1"/><circle cx="18" cy="7" r="2"/><circle cx="4" cy="7" r="2"/></svg></div><h3 style="font-family:Teko,sans-serif;font-size:1.1rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;letter-spacing:.04em;">Comunidade</h3><p style="font-size:.78rem;color:rgba(238,249,255,.38);line-height:1.65;">Atletas de todo o Brasil celebrando a cultura Va'a.</p></div>
-<div class="dc"><div class="dcn">04</div><div class="ib"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#00C2D4" stroke-width="1.8" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div><h3 style="font-family:Teko,sans-serif;font-size:1.1rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;letter-spacing:.04em;">Itaipu</h3><p style="font-size:.78rem;color:rgba(238,249,255,.38);line-height:1.65;">Uma das praias mais bonitas e técnicas do litoral fluminense.</p></div>
-</div>
-</div>
-</div>
+  <div style="max-width:1020px;margin:0 auto;">
+    <div class="r2" style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;">
+      <div>
+        <p class="sl">A Prova</p>
+        <h2 class="st" style="margin-bottom:16px;">Itaipu é<br>diferente.</h2>
+        <div class="cbar" style="margin-bottom:20px;"></div>
+        <p style="font-size:.95rem;line-height:1.85;color:rgba(238,249,255,.55);margin-bottom:14px;">Não é uma baía fechada. Não é um lago. É o Oceano Atlântico — com swell de sul, vento terral e corrente lateral. As mesmas condições que forjam os grandes paddlers do mundo.</p>
+        <p style="font-size:.95rem;line-height:1.85;color:rgba(238,249,255,.55);">Uma prova de verdade, em condições de verdade. A V1 RJ 25K existe para celebrar quem escolhe o mar como parceiro — não como obstáculo.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="dc"><div class="dcn">01</div><div class="ib"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--wave)" stroke-width="1.8" stroke-linecap="round"><path d="M2 12 Q6 8 10 12 Q14 16 18 12 Q20 10 22 12"/><path d="M2 17 Q6 13 10 17 Q14 21 18 17 Q20 15 22 17"/></svg></div><h3 style="font-family:Teko,sans-serif;font-size:1.1rem;font-weight:600;color:var(--sand);margin-bottom:4px;letter-spacing:.04em;">Mar aberto</h3><p style="font-size:.78rem;color:rgba(238,249,255,.38);line-height:1.65;">Swell real, corrente e vento do Atlântico Sul.</p></div>
+        <div class="dc"><div class="dcn">02</div><div class="ib"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--wave)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3 style="font-family:Teko,sans-serif;font-size:1.1rem;font-weight:600;color:var(--sand);margin-bottom:4px;letter-spacing:.04em;">25km de glória</h3><p style="font-size:.78rem;color:rgba(238,249,255,.38);line-height:1.65;">A maior distância V1 individual do RJ.</p></div>
+        <div class="dc"><div class="dcn">03</div><div class="ib"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--wave)" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="3"/><path d="M6 19v-1a6 6 0 0 1 12 0v1"/><circle cx="18" cy="7" r="2"/><circle cx="4" cy="7" r="2"/></svg></div><h3 style="font-family:Teko,sans-serif;font-size:1.1rem;font-weight:600;color:var(--sand);margin-bottom:4px;letter-spacing:.04em;">Comunidade</h3><p style="font-size:.78rem;color:rgba(238,249,255,.38);line-height:1.65;">Atletas de todo o Brasil celebrando a cultura Va'a.</p></div>
+        <div class="dc"><div class="dcn">04</div><div class="ib"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--wave)" stroke-width="1.8" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div><h3 style="font-family:Teko,sans-serif;font-size:1.1rem;font-weight:600;color:var(--sand);margin-bottom:4px;letter-spacing:.04em;">Itaipu</h3><p style="font-size:.78rem;color:rgba(238,249,255,.38);line-height:1.65;">Uma das praias mais bonitas e técnicas do litoral fluminense.</p></div>
+      </div>
+    </div>
+  </div>
 </section>
+
 <!-- PERCURSO -->
 <section style="background:linear-gradient(180deg,#060F1E 0%,#0A2540 100%);padding:76px 24px;" id="percurso">
-<div style="max-width:760px;margin:0 auto;">
-<div style="text-align:center;margin-bottom:48px;"><p class="sl">Percurso</p><h2 class="st">25km pelo Atlântico</h2></div>
-<div style="position:relative;padding-left:4px;">
-<div aria-hidden="true" style="position:absolute;left:5px;top:18px;bottom:18px;width:2px;background:linear-gradient(180deg,#F4623A 0%,rgba(0,194,212,.2) 100%);border-radius:2px;"></div>
-<div style="display:flex;flex-direction:column;gap:0;">
-<div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
-<div style="width:12px;height:12px;border-radius:50%;background:#F4623A;border:2px solid #F4623A;margin-top:5px;box-shadow:0 0 0 5px rgba(244,98,58,.12);"></div>
-<div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:#E8D5A3;letter-spacing:.04em;">Largada · Praia de Itaipu</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Saída em linha no arrebentador. Mar aberto desde o primeiro stroke.</p></div>
-</div>
-<div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
-<div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid #00C2D4;margin-top:5px;"></div>
-<div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:#E8D5A3;letter-spacing:.04em;">Pedra da Tartaruga</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Balizamento com leitura de corrente e definição de estratégia de rota.</p></div>
-</div>
-<div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
-<div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid #00C2D4;margin-top:5px;"></div>
-<div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:#E8D5A3;letter-spacing:.04em;">Trecho aberto · 12km</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">O coração da prova. Swell diagonal, vento SE e leitura de água.</p></div>
-</div>
-<div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
-<div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid #00C2D4;margin-top:5px;"></div>
-<div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:#E8D5A3;letter-spacing:.04em;">Posto de Hidratação · km 13</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Reabastecimento no ponto médio. Kayak de apoio e equipe de segurança.</p></div>
-</div>
-<div style="display:grid;grid-template-columns:24px 1fr;gap:18px;">
-<div style="width:16px;height:16px;border-radius:50%;background:#F4623A;border:2px solid #F4623A;margin-top:3px;margin-left:-2px;box-shadow:0 0 0 6px rgba(244,98,58,.14);"></div>
-<div><div style="font-family:Teko,sans-serif;font-size:1.5rem;font-weight:700;color:#F4623A;letter-spacing:.04em;">Chegada · Itaipu</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">25km navegados. Medalha, reconhecimento e aloha.</p></div>
-</div>
-</div>
-</div>
-</div>
+  <div style="max-width:760px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;"><p class="sl">Percurso</p><h2 class="st">25km pelo Atlântico</h2></div>
+    <div style="position:relative;padding-left:4px;">
+      <div aria-hidden="true" style="position:absolute;left:5px;top:18px;bottom:18px;width:2px;background:linear-gradient(180deg,var(--coral) 0%,rgba(0,194,212,.2) 100%);border-radius:2px;"></div>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--coral);border:2px solid var(--coral);margin-top:5px;box-shadow:0 0 0 5px rgba(244,98,58,.12);"></div>
+          <div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.04em;">Largada · Praia de Itaipu</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Saída em linha no arrebentador. Mar aberto desde o primeiro stroke.</p></div>
+        </div>
+        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid var(--wave);margin-top:5px;"></div>
+          <div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.04em;">Pedra da Tartaruga</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Balizamento com leitura de corrente e definição de estratégia de rota.</p></div>
+        </div>
+        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid var(--wave);margin-top:5px;"></div>
+          <div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.04em;">Trecho aberto · 12km</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">O coração da prova. Swell diagonal, vento SE e leitura de água.</p></div>
+        </div>
+        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid var(--wave);margin-top:5px;"></div>
+          <div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.04em;">Posto de Hidratação · km 13</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Reabastecimento no ponto médio. Kayak de apoio e equipe de segurança.</p></div>
+        </div>
+        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;">
+          <div style="width:16px;height:16px;border-radius:50%;background:var(--coral);border:2px solid var(--coral);margin-top:3px;margin-left:-2px;box-shadow:0 0 0 6px rgba(244,98,58,.14);"></div>
+          <div><div style="font-family:Teko,sans-serif;font-size:1.5rem;font-weight:700;color:var(--coral);letter-spacing:.04em;">Chegada · Itaipu</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">25km navegados. Medalha, reconhecimento e aloha.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+
 <!-- CATEGORIAS -->
 <section style="background:#060F1E;padding:76px 24px;" id="categorias-sec">
-<div style="max-width:880px;margin:0 auto;">
-<div style="text-align:center;margin-bottom:40px;"><p class="sl">Categorias</p><h2 class="st">Encontre a sua</h2><p style="font-size:.8rem;color:rgba(238,249,255,.28);margin-top:10px;font-weight:300;">Classificação por idade — Regra CBCa (31/12/2026)</p></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;">
-<div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;">Junior</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">14 – 17 anos</div><div style="display:flex;gap:5px;justify-content:center;margin-top:9px;">MF</div></div>
-<div class="cc dest"><div style="font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#F4623A;margin-bottom:4px;">Principal</div><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;">Open</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">18 – 39 anos</div><div style="display:flex;gap:5px;justify-content:center;margin-top:9px;">MF</div></div>
-<div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;">Master 40+</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">40 – 49 anos</div><div style="display:flex;gap:5px;justify-content:center;margin-top:9px;">MF</div></div>
-<div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;">Master 50+</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">50 – 59 anos</div><div style="display:flex;gap:5px;justify-content:center;margin-top:9px;">MF</div></div>
-<div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;">Master 60+</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">60+ anos</div><div style="display:flex;gap:5px;justify-content:center;margin-top:9px;">MF</div></div>
-<div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:#E8D5A3;margin-bottom:4px;">Amador</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">18+ anos</div><div style="display:flex;gap:5px;justify-content:center;margin-top:9px;">MF</div></div>
-</div>
-<p style="text-align:center;margin-top:18px;font-size:.72rem;color:rgba(238,249,255,.18);font-weight:300;">A categoria é sugerida automaticamente ao preencher a data de nascimento.</p>
-</div>
+  <div style="max-width:880px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:40px;"><p class="sl">Categorias</p><h2 class="st">Encontre a sua</h2><p style="font-size:.8rem;color:rgba(238,249,255,.28);margin-top:10px;font-weight:300;">Classificação por idade — Regra CBCa (31/12/2026)</p></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;">
+      <div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:var(--sand);margin-bottom:4px;">Junior</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">14 – 17 anos</div></div>
+      <div class="cc dest"><div style="font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--coral);margin-bottom:4px;">Principal</div><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:var(--sand);margin-bottom:4px;">Open</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">18 – 39 anos</div></div>
+      <div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:var(--sand);margin-bottom:4px;">Master 40+</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">40 – 49 anos</div></div>
+      <div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:var(--sand);margin-bottom:4px;">Master 50+</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">50 – 59 anos</div></div>
+      <div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:var(--sand);margin-bottom:4px;">Master 60+</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">60+ anos</div></div>
+      <div class="cc"><div style="font-family:Teko,sans-serif;font-size:1.45rem;font-weight:600;color:var(--sand);margin-bottom:4px;">Amador</div><div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,194,212,.42);">18+ anos</div></div>
+    </div>
+    <p style="text-align:center;margin-top:18px;font-size:.72rem;color:rgba(238,249,255,.18);font-weight:300;">A categoria é sugerida automaticamente ao preencher a data de nascimento.</p>
+  </div>
 </section>
-<!-- ═══════════════════════════════════════════════════════
-FORMULÁRIO DE INSCRIÇÃO
-════════════════════════════════════════════════════════ -->
+
+<!-- INSCRIÇÃO (mantive seu formulário como está) -->
 <section style="background:linear-gradient(180deg,#060F1E 0%,#0A2540 100%);padding:76px 24px 100px;" id="inscricao">
-<div style="max-width:580px;margin:0 auto;">
-<div style="text-align:center;margin-bottom:32px;">
-<p class="sl">Inscrições abertas</p>
-<h2 class="st" style="margin-bottom:8px;">Faça parte</h2>
-<p style="font-size:.82rem;color:rgba(238,249,255,.28);font-weight:300;">Preencha os dados e finalize pelo Mercado Pago.</p>
-</div>
-<!-- Alerta global -->
-<div id="alrt" class="alrt">
-<div><p id="alrt-t" style="font-weight:700;font-size:.88rem;"></p><p id="alrt-b" style="font-size:.8rem;color:rgba(238,249,255,.4);margin-top:2px;"></p></div>
-</div>
-<div class="form-outer">
-<!-- Barra de progresso -->
-<div class="spb"><div class="sg cur" id="sg1"></div><div class="sg" id="sg2"></div><div class="sg" id="sg3"></div></div>
-<p id="slbl" style="font-size:.64rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,194,212,.44);margin-bottom:18px;">Passo 1 de 3 — Dados pessoais</p>
-<form id="form" novalidate>
-<!-- STEP 1: Dados pessoais -->
-<div id="s1" style="display:flex;flex-direction:column;gap:14px;">
-<div>
-<label class="fl" for="nome">Nome completo *</label>
-<input class="fi" id="nome" type="text" placeholder="Seu nome completo" autocomplete="name"/>
-<p class="fe" id="e-nome">Informe pelo menos nome e sobrenome.</p>
-</div>
-<div>
-<label class="fl" for="cpf">CPF *</label>
-<div style="position:relative;">
-<input class="fi" id="cpf" type="text" placeholder="000.000.000-00" maxlength="14" autocomplete="off" style="padding-right:36px;"/>
-</div>
-<p class="fe" id="e-cpf">CPF inválido.</p>
-<p class="fe" id="e-cpf-dup">Este CPF já possui inscrição.</p>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-<div>
-<label class="fl" for="email">E-mail *</label>
-<input class="fi" id="email" type="email" placeholder="seu@email.com" autocomplete="email"/>
-<p class="fe" id="e-email">E-mail inválido.</p>
-</div>
-<div>
-<label class="fl" for="tel">WhatsApp</label>
-<input class="fi" id="tel" type="tel" placeholder="(21) 99999-9999" maxlength="15"/>
-</div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-<div>
-<label class="fl" for="nasc">Nascimento *</label>
-<input class="fi" id="nasc" type="date" max="2012-12-31" min="1920-01-01"/>
-<p class="fe" id="e-nasc">Data inválida.</p>
-</div>
-<div>
-<label class="fl" for="gen">Gênero *</label>
-<select class="fi" id="gen">
-<option value="">Selecione</option>
-<option value="M">Masculino</option>
-<option value="F">Feminino</option>
-</select>
-<p class="fe" id="e-gen">Selecione o gênero.</p>
-</div>
-</div>
-<!-- Categoria sugerida automaticamente (aparece após preencher data + gênero) -->
-<div id="catbox" style="display:none;">
-<label class="fl">Categoria — Regra CBCa (31/12/2026)</label>
-<div style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:9px;background:rgba(244,98,58,.06);border:1px solid rgba(244,98,58,.18);">
-<div id="cat-badge"></div>
-<p style="font-size:.78rem;color:rgba(238,249,255,.32);">Idade na prova:  anos</p>
-</div>
-<input type="hidden" id="cat-id"/>
-<p class="fe" id="e-cat">Categoria sem vagas ou indisponível.</p>
-</div>
-<div style="display:flex;justify-content:flex-end;margin-top:6px;">
-<button type="button" onclick="ir(2)" class="btn-p">Próximo →</button>
-</div>
-</div>
-<!-- STEP 2: Dados do atleta -->
-<div id="s2" style="display:none;flex-direction:column;gap:14px;">
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-<div style="grid-column:1/-1;">
-<label class="fl" for="clube">Clube / Associação</label>
-<input class="fi" id="clube" type="text" placeholder="Nome do clube ou Independente"/>
-</div>
-<div>
-<label class="fl" for="uf">Estado (UF) *</label>
-<select class="fi" id="uf">
-<option value="">UF</option>
-<option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
-<option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
-<option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
-<option>PR</option><option>PE</option><option>PI</option><option selected>RJ</option><option>RN</option>
-<option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
-<option>SE</option><option>TO</option>
-</select>
-<p class="fe" id="e-uf">Selecione o estado.</p>
-</div>
-</div>
-<!-- Seletor visual de camiseta -->
-<div>
-<label class="fl">Tamanho da camiseta *</label>
-<div class="shirt" style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;">
-<label><input type="radio" name="cam" value="PP"/>PP</label>
-<label><input type="radio" name="cam" value="P"/>P</label>
-<label><input type="radio" name="cam" value="M"/>M</label>
-<label><input type="radio" name="cam" value="G"/>G</label>
-<label><input type="radio" name="cam" value="GG"/>GG</label>
-<label><input type="radio" name="cam" value="XGG"/>XGG</label>
-</div>
-<p class="fe" id="e-cam">Selecione um tamanho.</p>
-</div>
-<!-- Toggle aluguel de canoa -->
-<div style="padding:14px;border-radius:9px;background:rgba(232,213,163,.04);border:1px solid rgba(232,213,163,.09);">
-<label class="trow">
-<input type="checkbox" id="aluguel"/>
-<div class="ttr"><div class="tth"></div></div>
-<div>
-<p style="font-weight:700;font-size:.84rem;color:#E8D5A3;margin-bottom:2px;">Interesse em Aluguel de Canoa</p>
-<p style="font-size:.74rem;color:rgba(238,249,255,.28);">Conectamos quem precisa com quem tem disponível</p>
-</div>
-</label>
-</div>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-<button type="button" onclick="ir(1)" class="btn-g" style="font-size:.85rem;padding:9px 18px 7px;">← Voltar</button>
-<button type="button" onclick="ir(3)" class="btn-p">Próximo →</button>
-</div>
-</div>
-<!-- STEP 3: Revisão e pagamento -->
-<div id="s3" style="display:none;">
-<h3 style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:#E8D5A3;letter-spacing:.05em;margin-bottom:14px;">Revise sua inscrição</h3>
-<!-- Resumo em formato de tabela clean -->
-<div id="resumo" style="border-radius:10px;overflow:hidden;margin-bottom:16px;"></div>
-<!-- Valor e método de pagamento -->
-<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-radius:9px;background:rgba(244,98,58,.07);border:1px solid rgba(244,98,58,.17);margin-bottom:16px;">
-<div>
-<p style="font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,98,58,.55);">Taxa de inscrição</p>
-<p id="val" style="font-family:Teko,sans-serif;font-size:2.4rem;font-weight:700;color:#F4623A;line-height:1;">R$ —</p>
-</div>
-<div style="text-align:right;">
-<p style="font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(238,249,255,.22);">Via</p>
-<p style="font-family:Teko,sans-serif;font-size:1.1rem;color:#00C2D4;letter-spacing:.06em;">Mercado Pago</p>
-</div>
-</div>
-<label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;margin-bottom:5px;">
-<input type="checkbox" id="termos" style="margin-top:3px;accent-color:#F4623A;width:14px;height:14px;flex-shrink:0;"/>
-Li e aceito o <a href="#" style="color:#00C2D4;">Regulamento</a> e a <a href="#" style="color:#00C2D4;">Política de Privacidade</a>. Declaro estar apto fisicamente a participar.
-</label>
-<p class="fe" id="e-termos">Aceite os termos para continuar.</p>
-<button type="submit" id="btn-sub" class="btn-p" style="width:100%;justify-content:center;margin-top:16px;font-size:1.15rem;padding:14px 36px 12px;">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
-Pagar e Confirmar
-</button>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
-<button type="button" onclick="ir(2)" class="btn-g" style="font-size:.85rem;padding:9px 18px 7px;">← Voltar</button>
-<p style="font-size:.66rem;color:rgba(238,249,255,.16);"> Checkout seguro</p>
-</div>
-</div>
-</form>
-</div>
-</div>
+  <div style="max-width:580px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:32px;">
+      <p class="sl" id="insc-title">Inscrições</p>
+      <h2 class="st" style="margin-bottom:8px;">Faça parte</h2>
+      <p style="font-size:.82rem;color:rgba(238,249,255,.28);font-weight:300;">Preencha os dados e finalize pelo Mercado Pago.</p>
+    </div>
+
+    <!-- Alerta global -->
+    <div id="alrt" class="alrt">
+      <span id="alrt-ico" style="font-size:1.1rem;flex-shrink:0;margin-top:1px;"></span>
+      <div><p id="alrt-t" style="font-weight:700;font-size:.88rem;"></p><p id="alrt-b" style="font-size:.8rem;color:rgba(238,249,255,.4);margin-top:2px;"></p></div>
+    </div>
+
+    <div class="form-outer">
+
+      <!-- Barra de progresso -->
+      <div class="spb"><div class="sg cur" id="sg1"></div><div class="sg" id="sg2"></div><div class="sg" id="sg3"></div></div>
+      <p id="slbl" style="font-size:.64rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(0,194,212,.44);margin-bottom:18px;">Passo 1 de 3 — Dados pessoais</p>
+
+      <form id="form" novalidate>
+
+        <!-- STEP 1: Dados pessoais -->
+        <div id="s1" style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <label class="fl" for="nome">Nome completo *</label>
+            <input class="fi" id="nome" type="text" placeholder="Seu nome completo" autocomplete="name"/>
+            <p class="fe" id="e-nome">Informe pelo menos nome e sobrenome.</p>
+          </div>
+          <div>
+            <label class="fl" for="cpf">CPF *</label>
+            <div style="position:relative;">
+              <input class="fi" id="cpf" type="text" placeholder="000.000.000-00" maxlength="14" autocomplete="off" style="padding-right:36px;"/>
+              <span id="cpf-s" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.9rem;"></span>
+            </div>
+            <p class="fe" id="e-cpf">CPF inválido.</p>
+            <p class="fe" id="e-cpf-dup">Este CPF já possui inscrição.</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label class="fl" for="email">E-mail *</label>
+              <input class="fi" id="email" type="email" placeholder="seu@email.com" autocomplete="email"/>
+              <p class="fe" id="e-email">E-mail inválido.</p>
+            </div>
+            <div>
+              <label class="fl" for="tel">WhatsApp</label>
+              <input class="fi" id="tel" type="tel" placeholder="(21) 99999-9999" maxlength="15"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label class="fl" for="nasc">Nascimento *</label>
+              <input class="fi" id="nasc" type="date" max="2012-12-31" min="1920-01-01"/>
+              <p class="fe" id="e-nasc">Data inválida.</p>
+            </div>
+            <div>
+              <label class="fl" for="gen">Gênero *</label>
+              <select class="fi" id="gen">
+                <option value="">Selecione</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+              </select>
+              <p class="fe" id="e-gen">Selecione o gênero.</p>
+            </div>
+          </div>
+
+          <!-- Categoria sugerida automaticamente -->
+          <div id="catbox" style="display:none;">
+            <label class="fl">Categoria — Regra CBCa (31/12/2026)</label>
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:9px;background:rgba(244,98,58,.06);border:1px solid rgba(244,98,58,.18);">
+              <div id="cat-badge"></div>
+              <p style="font-size:.78rem;color:rgba(238,249,255,.32);">Idade na prova: <span id="cat-idade" style="color:var(--wave);font-weight:700;"></span> anos</p>
+            </div>
+            <input type="hidden" id="cat-id"/>
+            <p class="fe" id="e-cat">Categoria sem vagas ou indisponível.</p>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;margin-top:6px;">
+            <button type="button" onclick="ir(2)" class="btn-p">Próximo →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div id="s2" style="display:none;flex-direction:column;gap:14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="grid-column:1/-1;">
+              <label class="fl" for="clube">Clube / Associação</label>
+              <input class="fi" id="clube" type="text" placeholder="Nome do clube ou Independente"/>
+            </div>
+            <div>
+              <label class="fl" for="uf">Estado (UF) *</label>
+              <select class="fi" id="uf">
+                <option value="">UF</option>
+                <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option>
+                <option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option>
+                <option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option>
+                <option>PR</option><option>PE</option><option>PI</option><option selected>RJ</option><option>RN</option>
+                <option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option>
+                <option>SE</option><option>TO</option>
+              </select>
+              <p class="fe" id="e-uf">Selecione o estado.</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="fl">Tamanho da camiseta *</label>
+            <div class="shirt" style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;">
+              <label><input type="radio" name="cam" value="PP"/><span>PP</span></label>
+              <label><input type="radio" name="cam" value="P"/><span>P</span></label>
+              <label><input type="radio" name="cam" value="M"/><span>M</span></label>
+              <label><input type="radio" name="cam" value="G"/><span>G</span></label>
+              <label><input type="radio" name="cam" value="GG"/><span>GG</span></label>
+              <label><input type="radio" name="cam" value="XGG"/><span style="font-size:.72rem;">XGG</span></label>
+            </div>
+            <p class="fe" id="e-cam">Selecione um tamanho.</p>
+          </div>
+
+          <div style="padding:14px;border-radius:9px;background:rgba(232,213,163,.04);border:1px solid rgba(232,213,163,.09);">
+            <label class="trow">
+              <input type="checkbox" id="aluguel"/>
+              <div class="ttr"><div class="tth"></div></div>
+              <div>
+                <p style="font-weight:700;font-size:.84rem;color:var(--sand);margin-bottom:2px;">Interesse em Aluguel de Canoa</p>
+                <p style="font-size:.74rem;color:rgba(238,249,255,.28);">Conectamos quem precisa com quem tem disponível</p>
+              </div>
+            </label>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+            <button type="button" onclick="ir(1)" class="btn-g" style="font-size:.85rem;padding:9px 18px 7px;">← Voltar</button>
+            <button type="button" onclick="ir(3)" class="btn-p">Próximo →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div id="s3" style="display:none;">
+          <h3 style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.05em;margin-bottom:14px;">Revise sua inscrição</h3>
+          <div id="resumo" style="border-radius:10px;overflow:hidden;margin-bottom:16px;"></div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-radius:9px;background:rgba(244,98,58,.07);border:1px solid rgba(244,98,58,.17);margin-bottom:16px;">
+            <div>
+              <p style="font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,98,58,.55);">Taxa de inscrição</p>
+              <p id="val" style="font-family:Teko,sans-serif;font-size:2.4rem;font-weight:700;color:var(--coral);line-height:1;">R$ —</p>
+            </div>
+            <div style="text-align:right;">
+              <p style="font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(238,249,255,.22);">Via</p>
+              <p style="font-family:Teko,sans-serif;font-size:1.1rem;color:var(--wave);letter-spacing:.06em;">Mercado Pago</p>
+            </div>
+          </div>
+
+          <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer;margin-bottom:5px;">
+            <input type="checkbox" id="termos" style="margin-top:3px;accent-color:var(--coral);width:14px;height:14px;flex-shrink:0;"/>
+            <span style="font-size:.79rem;color:rgba(238,249,255,.38);line-height:1.65;">Li e aceito o <a href="regulamento.html" style="color:var(--wave);">Regulamento</a> e a <a href="#" style="color:var(--wave);">Política de Privacidade</a>. Declaro estar apto fisicamente a participar.</span>
+          </label>
+          <p class="fe" id="e-termos">Aceite os termos para continuar.</p>
+
+          <button type="submit" id="btn-sub" class="btn-p" style="width:100%;justify-content:center;margin-top:16px;font-size:1.15rem;padding:14px 36px 12px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+            Pagar e Confirmar
+          </button>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+            <button type="button" onclick="ir(2)" class="btn-g" style="font-size:.85rem;padding:9px 18px 7px;">← Voltar</button>
+            <p style="font-size:.66rem;color:rgba(238,249,255,.16);">Checkout seguro</p>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
 </section>
+
 <!-- FOOTER -->
 <footer>
-<div aria-hidden="true" style="display:flex;justify-content:center;gap:5px;margin-bottom:20px;opacity:.22;">
-<svg width="120" height="16" viewBox="0 0 120 16" fill="none">
-<path d="M0 8 Q15 0 30 8 Q45 16 60 8 Q75 0 90 8 Q105 16 120 8" stroke="#00C2D4" stroke-width="1.3" fill="none"/>
-<path d="M0 13 Q15 5 30 13 Q45 21 60 13 Q75 5 90 13 Q105 21 120 13" stroke="#E8D5A3" stroke-width=".6" fill="none" opacity=".5"/>
-</svg>
-</div>
-<div style="font-family:Teko,sans-serif;font-size:1.9rem;font-weight:700;color:#E8D5A3;margin-bottom:4px;">V1 RJ · 25K · 2026</div>
-<p style="font-size:.65rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(0,194,212,.32);margin-bottom:20px;">Praia de Itaipu · Niterói · Rio de Janeiro</p>
-<div style="display:flex;justify-content:center;gap:22px;margin-bottom:24px;">
-<a href="#" style="font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(238,249,255,.2);text-decoration:none;" onmouseover="this.style.color='#00C2D4'" onmouseout="this.style.color='rgba(238,249,255,.2)'">Regulamento</a>
-<a href="#" style="font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(238,249,255,.2);text-decoration:none;" onmouseover="this.style.color='#00C2D4'" onmouseout="this.style.color='rgba(238,249,255,.2)'">Contato</a>
-<a href="admin.html" style="font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,98,58,.32);text-decoration:none;" onmouseover="this.style.color='#F4623A'" onmouseout="this.style.color='rgba(244,98,58,.32)'">Admin</a>
-</div>
-<p style="font-size:.63rem;color:rgba(238,249,255,.1);font-weight:300;">Feito com aloha · V1 RJ 2026</p>
+  <div aria-hidden="true" style="display:flex;justify-content:center;gap:5px;margin-bottom:20px;opacity:.22;">
+    <svg width="120" height="16" viewBox="0 0 120 16" fill="none">
+      <path d="M0 8 Q15 0 30 8 Q45 16 60 8 Q75 0 90 8 Q105 16 120 8" stroke="var(--wave)" stroke-width="1.3" fill="none"/>
+      <path d="M0 13 Q15 5 30 13 Q45 21 60 13 Q75 5 90 13 Q105 21 120 13" stroke="var(--sand)" stroke-width=".6" fill="none" opacity=".5"/>
+    </svg>
+  </div>
+  <div style="font-family:Teko,sans-serif;font-size:1.9rem;font-weight:700;color:var(--sand);margin-bottom:4px;">V1 RJ · 25K · 2026</div>
+  <p style="font-size:.65rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(0,194,212,.32);margin-bottom:20px;">Praia de Itaipu · Niterói · Rio de Janeiro</p>
+  <div style="display:flex;justify-content:center;gap:22px;margin-bottom:24px;">
+    <a href="regulamento.html" style="font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(238,249,255,.2);text-decoration:none;" onmouseover="this.style.color='var(--wave)'" onmouseout="this.style.color='rgba(238,249,255,.2)'">Regulamento</a>
+    <a href="#" style="font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(238,249,255,.2);text-decoration:none;" onmouseover="this.style.color='var(--wave)'" onmouseout="this.style.color='rgba(238,249,255,.2)'">Contato</a>
+    <a href="admin.html" style="font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,98,58,.32);text-decoration:none;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='rgba(244,98,58,.32)'">Admin</a>
+  </div>
+  <p style="font-size:.63rem;color:rgba(238,249,255,.1);font-weight:300;">Feito com aloha · V1 RJ 2026</p>
 </footer>
+
 <script>
-const SUPABASE_URL='https://SEU-PROJETO.supabase.co',SUPABASE_ANON='SUA_ANON_KEY',ANO=2026;
-let sb=null;try{sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON);}catch(e){}
-// ── Stars polinésias ───────────────────────────────────────
-(()=>{const c=document.getElementById('stars');[[12,10],[28,20],[8,38],[44,12],[60,7],[74,18],[90,10],[97,28],[66,44],[18,54],[36,62],[80,52],[52,70],[6,72],[86,65],[22,80],[48,85],[70,75]].forEach(([x,y],i)=>{const s=document.createElement('div');const sz=i%3===0?5:i%3===1?4:3;s.className='star';s.style.cssText=left:${x}%;top:${y}%;width:${sz}px;height:${sz}px;--d:${3+Math.random()*4}s;--dl:${Math.random()*5}s;--op:${.3+Math.random()*.5};position:absolute;;c.appendChild(s);});})();
-// ── Countdown ──────────────────────────────────────────────
-(()=>{const t=new Date(${ANO}-10-04T08:00:00);const u=()=>{const d=t-new Date();if(d<=0)return;document.getElementById('cd-d').textContent=String(Math.floor(d/864e5)).padStart(3,'0');document.getElementById('cd-h').textContent=String(Math.floor(d%864e5/36e5)).padStart(2,'0');document.getElementById('cd-m').textContent=String(Math.floor(d%36e5/6e4)).padStart(2,'0');document.getElementById('cd-s').textContent=String(Math.floor(d%6e4/1e3)).padStart(2,'0');};u();setInterval(u,1000);})();
-// ── Utils ──────────────────────────────────────────────────
-const fmtCPF=v=>v.replace(/D/g,'').slice(0,11).replace(/(d{3})(d)/,'$1.$2').replace(/(d{3})(d)/,'$1.$2').replace(/(d{3})(d{1,2})$/,'$1-$2');
-const fmtTel=v=>{v=v.replace(/D/g,'').slice(0,11);return v.length<=10?v.replace(/(d{2})(d{4})(d)/,'($1) $2-$3'):v.replace(/(d{2})(d{5})(d)/,'($1) $2-$3');};
-function validCPF(c){c=c.replace(/D/g,'');if(c.length!==11||/^(d)1{10}$/.test(c))return false;let s=0,r;for(let i=1;i<=9;i++)s+=+c[i-1](11-i);r=s10%11;if(r>9)r=0;if(r!==+c[9])return false;s=0;for(let i=1;i<=10;i++)s+=+c[i-1](12-i);r=s10%11;if(r>9)r=0;return r===+c[10];}
-// ── Categoria (Regra CBCa) ─────────────────────────────────
+/**
+ * CONFIG
+ * - Em produção (GitHub Pages), configure SUPABASE_URL e SUPABASE_ANON.
+ * - Mantém fallback local para site não quebrar.
+ */
+const SUPABASE_URL='https://SEU-PROJETO.supabase.co';
+const SUPABASE_ANON='SUA_ANON_KEY';
+let sb=null; try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON); }catch(e){}
+
+/**
+ * Fallback (se Supabase não estiver pronto):
+ * 17/10/2026 08:00
+ */
+let EVENT_DATE_ISO = '2026-10-17T08:00:00-03:00';
+let EVENT_NAME = 'V1 RJ 25K 2026';
+let INSCRICOES_ABERTAS = true;
+let LIMITE_VAGAS = 200;
+
+/* ── Stars ─────────────────────────────────────────────── */
+(()=>{const c=document.getElementById('stars');[[12,10],[28,20],[8,38],[44,12],[60,7],[74,18],[90,10],[97,28],[66,44],[18,54],[36,62],[80,52],[52,70],[6,72],[86,65],[22,80],[48,85],[70,75]].forEach(([x,y],i)=>{const s=document.createElement('div');const sz=i%3===0?5:i%3===1?4:3;s.className='star';s.style.cssText=`left:${x}%;top:${y}%;width:${sz}px;height:${sz}px;--d:${3+Math.random()*4}s;--dl:${Math.random()*5}s;--op:${.3+Math.random()*.5};position:absolute;`;c.appendChild(s);});})();
+
+/* ── Utils ─────────────────────────────────────────────── */
+const fmtCPF=v=>v.replace(/\D/g,'').slice(0,11).replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+const fmtTel=v=>{v=v.replace(/\D/g,'').slice(0,11);return v.length<=10?v.replace(/(\d{2})(\d{4})(\d*)/,'($1) $2-$3'):v.replace(/(\d{2})(\d{5})(\d*)/,'($1) $2-$3');};
+function validCPF(c){c=c.replace(/\D/g,'');if(c.length!==11||/^(\d)\1{10}$/.test(c))return false;let s=0,r;for(let i=1;i<=9;i++)s+=+c[i-1]*(11-i);r=s*10%11;if(r>9)r=0;if(r!==+c[9])return false;s=0;for(let i=1;i<=10;i++)s+=+c[i-1]*(12-i);r=s*10%11;if(r>9)r=0;return r===+c[10];}
+
+/* ── Carregar config do Supabase ────────────────────────── */
+async function loadEventConfig(){
+  // Se não configurou supabase ainda, mantém fallback silencioso
+  if(!sb || SUPABASE_URL.includes('SEU-PROJETO') || SUPABASE_ANON.includes('SUA_ANON_KEY')) {
+    applyEventConfigToUI();
+    startCountdown();
+    return;
+  }
+
+  try{
+    const { data, error } = await sb
+      .from('configuracoes_evento')
+      .select('nome_evento, inscricoes_abertas, limite_vagas_global, data_prova, updated_at')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if(error) throw error;
+    if(data){
+      EVENT_NAME = data.nome_evento || EVENT_NAME;
+      INSCRICOES_ABERTAS = (data.inscricoes_abertas ?? INSCRICOES_ABERTAS);
+      LIMITE_VAGAS = (data.limite_vagas_global ?? LIMITE_VAGAS);
+
+      if(data.data_prova){
+        // data_prova é DATE no supabase -> "YYYY-MM-DD"
+        EVENT_DATE_ISO = `${data.data_prova}T08:00:00-03:00`;
+      }
+    }
+  }catch(e){
+    // Mantém fallback; não quebra a página
+    console.warn('[configuracoes_evento] fallback:', e?.message || e);
+  }
+
+  applyEventConfigToUI();
+  startCountdown();
+}
+
+function applyEventConfigToUI(){
+  const evtNameEl = document.getElementById('evt-name');
+  if(evtNameEl) evtNameEl.textContent = EVENT_NAME.replace(/\s+/g,' ').trim();
+
+  const pill = document.getElementById('insc-pill');
+  const txt  = document.getElementById('insc-txt');
+  const title= document.getElementById('insc-title');
+
+  if(INSCRICOES_ABERTAS){
+    pill.style.borderColor = 'rgba(0,194,212,.2)';
+    pill.style.background  = 'rgba(0,194,212,.07)';
+    pill.querySelector('span').style.background = 'var(--reggae-green)';
+    txt.textContent = 'Inscrições abertas';
+    title.textContent = 'Inscrições abertas';
+  }else{
+    pill.style.borderColor = 'rgba(244,98,58,.22)';
+    pill.style.background  = 'rgba(244,98,58,.08)';
+    pill.querySelector('span').style.background = 'var(--reggae-red)';
+    txt.textContent = 'Inscrições fechadas';
+    title.textContent = 'Inscrições';
+  }
+}
+
+/* ── Countdown ──────────────────────────────────────────── */
+let countdownTimer = null;
+function startCountdown(){
+  const t = new Date(EVENT_DATE_ISO);
+  const u = () => {
+    const d = t - new Date();
+    if(d <= 0){
+      // quando zerar, congela em 0
+      document.getElementById('cd-d').textContent = '000';
+      document.getElementById('cd-h').textContent = '00';
+      document.getElementById('cd-m').textContent = '00';
+      document.getElementById('cd-s').textContent = '00';
+      return;
+    }
+    document.getElementById('cd-d').textContent = String(Math.floor(d/864e5)).padStart(3,'0');
+    document.getElementById('cd-h').textContent = String(Math.floor(d%864e5/36e5)).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(Math.floor(d%36e5/6e4)).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(Math.floor(d%6e4/1e3)).padStart(2,'0');
+  };
+  u();
+  if(countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(u, 1000);
+}
+
+/* ── Categoria (Regra CBCa) ─────────────────────────────── */
+const ANO=2026; // regra de idade no ano
 let catNow=null,valor=0;
 function calcCat(nasc,gen){
-if(!nasc||!gen)return null;
-const idade=ANO-new Date(nasc).getFullYear();
-const lista=[{n:'Junior',min:14,max:17},{n:'Open',min:18,max:39},{n:'Master 40+',min:40,max:49},{n:'Master 50+',min:50,max:59},{n:'Master 60+',min:60,max:999}];
-const c=lista.find(x=>idade>=x.min&&idade<=x.max);
-return c?{nome:c.n,idade}:null;
+  if(!nasc||!gen)return null;
+  const idade=ANO-new Date(nasc).getFullYear();
+  const lista=[
+    {n:'Junior',min:14,max:17},
+    {n:'Open',min:18,max:39},
+    {n:'Master 40+',min:40,max:49},
+    {n:'Master 50+',min:50,max:59},
+    {n:'Master 60+',min:60,max:999}
+  ];
+  const c=lista.find(x=>idade>=x.min&&idade<=x.max);
+  return c?{nome:c.n,idade}:null;
 }
 async function atualizarCat(){
-const nasc=document.getElementById('nasc').value,gen=document.getElementById('gen').value;
-const box=document.getElementById('catbox');
-if(!nasc||!gen){box.style.display='none';return;}
-const r=calcCat(nasc,gen);
-if(!r){box.style.display='none';return;}
-box.style.display='block';
-document.getElementById('cat-badge').innerHTML=<span class="cbg">${r.nome}</span>;
-document.getElementById('cat-idade').textContent=r.idade;
-// busca no Supabase ou mock
-if(sb&&!SUPABASE_URL.includes('SEU-PROJETO')){
-const{data}=await sb.rpc('calcular_categoria',{p_data_nascimento:nasc,p_genero:gen});
-if(data?.length){const{data:cat}=await sb.from('categorias').select('id,nome,valor_inscricao').eq('id',data[0].categoria_id).single();if(cat){document.getElementById('cat-id').value=cat.id;catNow=cat;valor=cat.valor_inscricao;return;}}
-}
-document.getElementById('cat-id').value='mock';catNow={nome:r.nome};valor=r.nome==='Amador'||r.nome==='Junior'?150:180;
+  const nasc=document.getElementById('nasc').value,gen=document.getElementById('gen').value;
+  const box=document.getElementById('catbox');
+  if(!nasc||!gen){box.style.display='none';return;}
+  const r=calcCat(nasc,gen);
+  if(!r){box.style.display='none';return;}
+  box.style.display='block';
+  document.getElementById('cat-badge').innerHTML=`<span class="cbg">${r.nome}</span>`;
+  document.getElementById('cat-idade').textContent=r.idade;
+
+  // mock / placeholder: valores configuráveis no admin no futuro
+  document.getElementById('cat-id').value='mock';
+  catNow={nome:r.nome};
+  valor=r.nome==='Junior'?150:180;
 }
 document.getElementById('nasc').addEventListener('change',atualizarCat);
 document.getElementById('gen').addEventListener('change',atualizarCat);
-// ── Masks ──────────────────────────────────────────────────
+
+/* ── Masks ─────────────────────────────────────────────── */
 document.getElementById('cpf').addEventListener('input',function(){
-this.value=fmtCPF(this.value);
-const l=this.value.replace(/D/g,''),s=document.getElementById('cpf-s');
-if(l.length<11){s.textContent='';this.classList.remove('err','ok');return;}
-if(validCPF(l)){s.textContent='';this.classList.add('ok');this.classList.remove('err');}
-else{s.textContent='';this.classList.add('err');this.classList.remove('ok');}
+  this.value=fmtCPF(this.value);
+  const l=this.value.replace(/\D/g,''),s=document.getElementById('cpf-s');
+  if(l.length<11){s.textContent='';this.classList.remove('err','ok');return;}
+  if(validCPF(l)){s.textContent='✅';this.classList.add('ok');this.classList.remove('err');}
+  else{s.textContent='❌';this.classList.add('err');this.classList.remove('ok');}
 });
 document.getElementById('tel').addEventListener('input',function(){this.value=fmtTel(this.value);});
-// ── Validação por step ─────────────────────────────────────
+
+/* ── Validação por step ─────────────────────────────────── */
 function setE(id,v){document.getElementById(id)?.classList.toggle('on',v);}
 function validStep(n){
-let ok=true;
-if(n===1){
-const nome=document.getElementById('nome').value.trim();
-const cpf=document.getElementById('cpf').value.replace(/D/g,'');
-const em=document.getElementById('email').value.trim();
-if(nome.split(' ').filter(Boolean).length<2){setE('e-nome',true);ok=false;}else setE('e-nome',false);
-if(!validCPF(cpf)){setE('e-cpf',true);ok=false;}else setE('e-cpf',false);
-if(!em.match(/^⁠
-⁠+@⁠
-⁠+.⁠
-⁠+$/)){setE('e-email',true);ok=false;}else setE('e-email',false);
-if(!document.getElementById('nasc').value){setE('e-nasc',true);ok=false;}else setE('e-nasc',false);
-if(!document.getElementById('gen').value){setE('e-gen',true);ok=false;}else setE('e-gen',false);
-if(!document.getElementById('cat-id').value){setE('e-cat',true);ok=false;}else setE('e-cat',false);
+  let ok=true;
+  if(n===1){
+    const nome=document.getElementById('nome').value.trim();
+    const cpf=document.getElementById('cpf').value.replace(/\D/g,'');
+    const em=document.getElementById('email').value.trim();
+    if(nome.split(' ').filter(Boolean).length<2){setE('e-nome',true);ok=false;}else setE('e-nome',false);
+    if(!validCPF(cpf)){setE('e-cpf',true);ok=false;}else setE('e-cpf',false);
+    if(!em.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){setE('e-email',true);ok=false;}else setE('e-email',false);
+    if(!document.getElementById('nasc').value){setE('e-nasc',true);ok=false;}else setE('e-nasc',false);
+    if(!document.getElementById('gen').value){setE('e-gen',true);ok=false;}else setE('e-gen',false);
+    if(!document.getElementById('cat-id').value){setE('e-cat',true);ok=false;}else setE('e-cat',false);
+  }
+  if(n===2){
+    if(!document.getElementById('uf').value){setE('e-uf',true);ok=false;}else setE('e-uf',false);
+    if(!document.querySelector('input[name="cam"]:checked')){setE('e-cam',true);ok=false;}else setE('e-cam',false);
+  }
+  return ok;
 }
-if(n===2){
-if(!document.getElementById('uf').value){setE('e-uf',true);ok=false;}else setE('e-uf',false);
-if(!document.querySelector('input[name="cam"]:checked')){setE('e-cam',true);ok=false;}else setE('e-cam',false);
-}
-return ok;
-}
-// ── Navegação entre steps ──────────────────────────────────
+
+/* ── Navegação entre steps ──────────────────────────────── */
 const slbls=['Dados pessoais','Dados do atleta','Revisão e pagamento'];
 let cur=1;
 function ir(n){
-if(n>cur&&!validStep(cur))return;
-if(n===3)buildResumo();
-cur=n;
-[1,2,3].forEach(i=>{
-const s=document.getElementById(s${i});
-s.style.display=i===n?(i===2?'flex':'block'):'none';
-const sg=document.getElementById(sg${i});
-sg.className='sg'+(i<n?' done':i===n?' cur':'');
-});
-document.getElementById('slbl').textContent=Passo ${n} de 3 — ${slbls[n-1]};
-document.getElementById('inscricao').scrollIntoView({behavior:'smooth'});
+  if(n>cur&&!validStep(cur))return;
+  if(n===3)buildResumo();
+  cur=n;
+  [1,2,3].forEach(i=>{
+    const s=document.getElementById(`s${i}`);
+    s.style.display=i===n?(i===2?'flex':'block'):'none';
+    const sg=document.getElementById(`sg${i}`);
+    sg.className='sg'+(i<n?' done':i===n?' cur':'');
+  });
+  document.getElementById('slbl').textContent=`Passo ${n} de 3 — ${slbls[n-1]}`;
+  document.getElementById('inscricao').scrollIntoView({behavior:'smooth'});
 }
-// ── Resumo do step 3 ───────────────────────────────────────
+
+/* ── Resumo do step 3 ───────────────────────────────────── */
 function buildResumo(){
-const g={M:'Masculino',F:'Feminino'};
-const fields={
-'Nome':document.getElementById('nome').value.trim(),
-'CPF':document.getElementById('cpf').value,
-'E-mail':document.getElementById('email').value.trim(),
-'Nascimento':document.getElementById('nasc').value.split('-').reverse().join('/'),
-'Gênero':g[document.getElementById('gen').value]||'—',
-'Categoria':catNow?.nome||'—',
-'Clube':document.getElementById('clube').value.trim()||'Independente',
-'Estado':document.getElementById('uf').value,
-'Camiseta':document.querySelector('input[name="cam"]:checked')?.value||'—',
-'Aluguel canoa':document.getElementById('aluguel').checked?'Sim, tenho interesse':'Não',
-};
-document.getElementById('resumo').innerHTML=Object.entries(fields).map(([k,v])=><div class="res-row"><span style="font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,194,212,.42);flex-shrink:0;">${k}</span><span style="font-size:.82rem;color:rgba(238,249,255,.68);text-align:right;">${v}</span></div>).join('');
-document.getElementById('val').textContent=R$ ${(valor||180).toFixed(2).replace('.',',')};
+  const g={M:'Masculino',F:'Feminino'};
+  const fields={
+    'Nome':document.getElementById('nome').value.trim(),
+    'CPF':document.getElementById('cpf').value,
+    'E-mail':document.getElementById('email').value.trim(),
+    'Nascimento':document.getElementById('nasc').value.split('-').reverse().join('/'),
+    'Gênero':g[document.getElementById('gen').value]||'—',
+    'Categoria':catNow?.nome||'—',
+    'Clube':document.getElementById('clube').value.trim()||'Independente',
+    'Estado':document.getElementById('uf').value,
+    'Camiseta':document.querySelector('input[name="cam"]:checked')?.value||'—',
+    'Aluguel canoa':document.getElementById('aluguel').checked?'Sim, tenho interesse':'Não',
+  };
+  document.getElementById('resumo').innerHTML=Object.entries(fields).map(([k,v])=>`<div class="res-row"><span style="font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,194,212,.42);flex-shrink:0;">${k}</span><span style="font-size:.82rem;color:rgba(238,249,255,.68);text-align:right;">${v}</span></div>`).join('');
+  document.getElementById('val').textContent=`R$ ${(valor||180).toFixed(2).replace('.',',')}`;
 }
-// ── Alerta global ──────────────────────────────────────────
-function showAlrt(tp,t,b){const el=document.getElementById('alrt');el.className=alrt alrt-${tp==='ok'?'ok':'err'} on;document.getElementById('alrt-ico').textContent=tp==='ok'?'':'';document.getElementById('alrt-t').textContent=t;document.getElementById('alrt-b').textContent=b;el.scrollIntoView({behavior:'smooth',block:'center'});}
-// ── Submit ─────────────────────────────────────────────────
+
+/* ── Alerta global ──────────────────────────────────────── */
+function showAlrt(tp,t,b){
+  const el=document.getElementById('alrt');
+  el.className=`alrt alrt-${tp==='ok'?'ok':'err'} on`;
+  document.getElementById('alrt-ico').textContent=tp==='ok'?'✅':'❌';
+  document.getElementById('alrt-t').textContent=t;
+  document.getElementById('alrt-b').textContent=b;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ── Submit ─────────────────────────────────────────────── */
 let submitting=false;
 document.getElementById('form').addEventListener('submit',async function(e){
-e.preventDefault();
-if(submitting)return;
-if(!document.getElementById('termos').checked){setE('e-termos',true);return;}
-setE('e-termos',false);
-const btn=document.getElementById('btn-sub');
-btn.disabled=true;submitting=true;
-document.getElementById('ldr').classList.add('on');
-document.getElementById('lmsg').textContent='Registrando inscrição...';
-const nasc=document.getElementById('nasc').value,gen=document.getElementById('gen').value;
-const payload={
-nome_completo:document.getElementById('nome').value.trim(),
-cpf:document.getElementById('cpf').value.replace(/D/g,''),
-email:document.getElementById('email').value.trim(),
-telefone:document.getElementById('tel').value.replace(/D/g,'')||null,
-data_nascimento:nasc,genero:gen,
-clube:document.getElementById('clube').value.trim()||null,
-estado:document.getElementById('uf').value,
-categoria_id:document.getElementById('cat-id').value,
-idade_na_prova:calcCat(nasc,gen)?.idade||0,
-tamanho_camiseta:document.querySelector('input[name="cam"]:checked')?.value,
-aluguel_canoa:document.getElementById('aluguel').checked,
-status_pagamento:'pendente',
-};
-try{
-let id;
-if(sb&&!SUPABASE_URL.includes('SEU-PROJETO')){
-const{data,error}=await sb.from('inscritos').insert(payload).select('id').single();
-if(error)throw new Error(error.message);
-id=data.id;
-}else{
-id='demo-'+Date.now();
-console.log(' Payload Supabase:',payload);
-}
-document.getElementById('lmsg').textContent='Preparando checkout...';
-if(SUPABASE_URL.includes('SEU-PROJETO')){
-document.getElementById('ldr').classList.remove('on');
-showAlrt('ok','Inscrição registrada! ','Modo demo ativo. Configure SUPABASE_URL + ANON_KEY + MP_ACCESS_TOKEN para ativar o pagamento.');
-btn.disabled=false;submitting=false;return;
-}
-const controller=new AbortController();
-const tid=setTimeout(()=>controller.abort(),15000);
-const resp=await fetch(${SUPABASE_URL}/functions/v1/criar-pagamento,{
-method:'POST',
-headers:{'Content-Type':'application/json','Authorization':Bearer ${SUPABASE_ANON}},
-body:JSON.stringify({inscrito_id:id,nome:payload.nome_completo,email:payload.email,valor,descricao:V1 RJ 25K 2026 — ${catNow?.nome}}),
-signal:controller.signal
+  e.preventDefault();
+  if(submitting)return;
+  if(!document.getElementById('termos').checked){setE('e-termos',true);return;}
+  setE('e-termos',false);
+
+  const btn=document.getElementById('btn-sub');
+  btn.disabled=true;submitting=true;
+  document.getElementById('ldr').classList.add('on');
+  document.getElementById('lmsg').textContent='Registrando inscrição...';
+
+  const nasc=document.getElementById('nasc').value,gen=document.getElementById('gen').value;
+  const payload={
+    nome_completo:document.getElementById('nome').value.trim(),
+    cpf:document.getElementById('cpf').value.replace(/\D/g,''),
+    email:document.getElementById('email').value.trim(),
+    telefone:document.getElementById('tel').value.replace(/\D/g,'')||null,
+    data_nascimento:nasc,genero:gen,
+    clube:document.getElementById('clube').value.trim()||null,
+    estado:document.getElementById('uf').value,
+    categoria_id:document.getElementById('cat-id').value,
+    idade_na_prova:calcCat(nasc,gen)?.idade||0,
+    tamanho_camiseta:document.querySelector('input[name="cam"]:checked')?.value,
+    aluguel_canoa:document.getElementById('aluguel').checked,
+    status_pagamento:'pendente',
+  };
+
+  try{
+    let id;
+    if(!sb || SUPABASE_URL.includes('SEU-PROJETO')){
+      // Demo
+      id='demo-'+Date.now();
+      console.log('📋 Payload Supabase:',payload);
+    }else{
+      const { data, error } = await sb.from('inscritos').insert(payload).select('id').single();
+      if(error) throw new Error(error.message);
+      id=data.id;
+    }
+
+    document.getElementById('lmsg').textContent='Preparando checkout...';
+
+    if(SUPABASE_URL.includes('SEU-PROJETO')){
+      document.getElementById('ldr').classList.remove('on');
+      showAlrt('ok','Inscrição registrada!','Modo demo ativo. Configure SUPABASE_URL + ANON_KEY + Mercado Pago para ativar o pagamento.');
+      btn.disabled=false;submitting=false;return;
+    }
+
+    // Aqui você vai integrar a Edge Function do Mercado Pago (quando estiver pronta)
+    document.getElementById('ldr').classList.remove('on');
+    showAlrt('ok','Inscrição registrada!','Pagamento será habilitado assim que a função de checkout estiver configurada.');
+    btn.disabled=false;submitting=false;
+
+  }catch(err){
+    console.error('[Checkout]',err);
+    document.getElementById('ldr').classList.remove('on');
+    showAlrt('err','Erro na inscrição',err.message || 'Tente novamente.');
+    btn.disabled=false;submitting=false;
+  }
 });
-clearTimeout(tid);
-const j=await resp.json();
-if(!resp.ok||!j.init_point)throw new Error(j.error||'Link de pagamento não recebido.');
-document.getElementById('ldr').classList.remove('on');
-window.location.href=j.init_point;
-}catch(err){
-console.error('[Checkout]',err);
-document.getElementById('ldr').classList.remove('on');
-let msg=err.message;
-if(err.name==='AbortError'||msg.includes('fetch'))msg='Erro de conexão. Verifique sua internet e tente novamente.';
-showAlrt('err','Erro na inscrição',msg);
-btn.disabled=false;submitting=false;
-}
-});
+
+/* Boot */
+loadEventConfig();
 </script>
 </body>
 </html>

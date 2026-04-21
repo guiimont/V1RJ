@@ -349,29 +349,72 @@ footer{background:var(--ocean-deep);border-top:1px solid rgba(0,194,212,.09);pad
     <div style="position:relative;padding-left:4px;">
       <div aria-hidden="true" style="position:absolute;left:5px;top:18px;bottom:18px;width:2px;background:linear-gradient(180deg,var(--coral) 0%,rgba(0,194,212,.2) 100%);border-radius:2px;"></div>
       <div style="display:flex;flex-direction:column;gap:0;">
-        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
-          <div style="width:12px;height:12px;border-radius:50%;background:var(--coral);border:2px solid var(--coral);margin-top:5px;box-shadow:0 0 0 5px rgba(244,98,58,.12);"></div>
-          <div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.04em;">Largada · Praia de Itaipu</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Saída em linha no arrebentador. Mar aberto desde o primeiro stroke.</p></div>
-        </div>
-        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
-          <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid var(--wave);margin-top:5px;"></div>
-          <div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.04em;">Pedra da Tartaruga</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Balizamento com leitura de corrente e definição de estratégia de rota.</p></div>
-        </div>
-        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
-          <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid var(--wave);margin-top:5px;"></div>
-          <div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.04em;">Trecho aberto · 12km</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">O coração da prova. Swell diagonal, vento SE e leitura de água.</p></div>
-        </div>
-        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;padding-bottom:32px;">
-          <div style="width:12px;height:12px;border-radius:50%;background:rgba(0,194,212,.25);border:2px solid var(--wave);margin-top:5px;"></div>
-          <div><div style="font-family:Teko,sans-serif;font-size:1.3rem;font-weight:600;color:var(--sand);letter-spacing:.04em;">Posto de Hidratação · km 13</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">Reabastecimento no ponto médio. Kayak de apoio e equipe de segurança.</p></div>
-        </div>
-        <div style="display:grid;grid-template-columns:24px 1fr;gap:18px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:var(--coral);border:2px solid var(--coral);margin-top:3px;margin-left:-2px;box-shadow:0 0 0 6px rgba(244,98,58,.14);"></div>
-          <div><div style="font-family:Teko,sans-serif;font-size:1.5rem;font-weight:700;color:var(--coral);letter-spacing:.04em;">Chegada · Itaipu</div><p style="font-size:.8rem;color:rgba(238,249,255,.38);line-height:1.6;margin-top:3px;">25km navegados. Medalha, reconhecimento e aloha.</p></div>
-        </div>
+
+  <!-- Card do percurso (mantém o layout e usa a barra vertical como “linha guia”) -->
+  <div style="
+    margin-left:20px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(0,194,212,.12);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 12px 40px rgba(0,0,0,.25);
+  ">
+    <!-- Cabeçalho do card -->
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    ">
+      <div style="
+        font-family:Teko,sans-serif;
+        font-size:1.3rem;
+        font-weight:600;
+        color:var(--sand);
+        letter-spacing:.04em;
+        text-transform:uppercase;
+      ">
+        Percurso oficial · 25km
+      </div>
+
+      <div style="
+        font-size:.72rem;
+        font-weight:900;
+        letter-spacing:.12em;
+        text-transform:uppercase;
+        padding:6px 10px;
+        border-radius:999px;
+        border:1px solid rgba(244,98,58,.22);
+        background:rgba(244,98,58,.08);
+        color:rgba(244,98,58,.95);
+        white-space:nowrap;
+      ">
+        25K
       </div>
     </div>
+
+    <!-- Imagem -->
+    <img
+      src="Percurso 25 km.png"
+      alt="Mapa do percurso oficial 25km"
+      style="display:block;width:100%;height:auto;"
+      loading="lazy"
+    />
+
+    <!-- Rodapé opcional (bem sutil) -->
+    <div style="
+      padding:12px 16px;
+      color:rgba(238,249,255,.5);
+      font-size:.85rem;
+      line-height:1.6;
+    ">
+      * O trajeto completo e pontos de referência serão detalhados no briefing.
+    </div>
   </div>
+
+</div>
 </section>
 
 <!-- CATEGORIAS -->

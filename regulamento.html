@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Regulamento — V1 RJ 25K 2026</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito Sans',sans-serif;background:#060F1E;color:#EEF9FF;overflow-x:hidden}
+
+:root{
+  --reggae-green:#28a745;
+  --reggae-yellow:#ffc107;
+  --reggae-red:#dc3545;
+  --ocean:#060F1E;
+  --ocean2:#0A2540;
+  --wave:#00C2D4;
+  --sand:#E8D5A3;
+  --coral:#F4623A;
+}
+
+/* Navbar simples */
+.nav{
+  position:sticky; top:0; z-index:50;
+  padding:14px 22px;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(6,15,30,.78);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(0,194,212,.1)
+}
+.nav a{color:rgba(238,249,255,.55);text-decoration:none;font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+.nav a:hover{color:#4DD9E8}
+
+.wrap{max-width:980px;margin:0 auto;padding:34px 18px 72px;}
+.h1{font-family:'Teko',sans-serif;font-size:3rem;color:var(--sand);letter-spacing:.05em;text-transform:uppercase;line-height:1}
+.sub{margin-top:8px;color:rgba(238,249,255,.45);line-height:1.7;font-size:.95rem}
+.rule{margin-top:18px;display:flex;gap:10px;align-items:flex-start;background:rgba(0,194,212,.06);border:1px solid rgba(0,194,212,.14);border-radius:12px;padding:14px 16px}
+.rule b{color:var(--sand)}
+.hr{height:1px;background:rgba(0,194,212,.12);margin:26px 0}
+
+/* Accordion */
+.acc{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+details{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(0,194,212,.12);
+  border-radius:14px;
+  overflow:hidden
+}
+summary{
+  cursor:pointer; list-style:none;
+  padding:16px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+summary::-webkit-details-marker{display:none}
+.sum-title{
+  font-family:'Teko',sans-serif;
+  font-size:1.35rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--sand)
+}
+.chev{
+  width:12px;height:12px;border-right:2px solid rgba(0,194,212,.65);border-bottom:2px solid rgba(0,194,212,.65);
+  transform:rotate(45deg);
+  transition:transform .18s
+}
+details[open] .chev{transform:rotate(225deg)}
+.content{padding:0 18px 18px;color:rgba(238,249,255,.62);line-height:1.85;font-size:.95rem}
+.content ul{padding-left:18px;margin-top:10px}
+.content li{margin:6px 0}
+.tag{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 12px;border-radius:999px;
+  border:1px solid rgba(0,194,212,.18);
+  background:rgba(0,194,212,.06);
+  font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(0,194,212,.75)
+}
+.tag i{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--reggae-yellow)}
+
+/* Percursos */
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+  margin-top:12px
+}
+@media(min-width:860px){
+  .grid{grid-template-columns:1fr 1fr}
+  .grid .full{grid-column:1/-1}
+}
+.card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(0,194,212,.12);
+  border-radius:14px;
+  overflow:hidden
+}
+.card .hd{
+  padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:space-between;gap:12px
+}
+.card .hd .t{
+  font-family:'Teko',sans-serif;
+  font-size:1.15rem;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--sand)
+}
+.badge{
+  font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
+  padding:6px 10px;border-radius:999px;
+  border:1px solid rgba(244,98,58,.22);
+  background:rgba(244,98,58,.08);
+  color:rgba(244,98,58,.95)
+}
+.card img{display:block;width:100%;height:auto}
+.card .bd{padding:14px 16px;color:rgba(238,249,255,.55);line-height:1.7;font-size:.92rem}
+small.muted{color:rgba(238,249,255,.35)}
+</style>
+</head>
+
+<body>
+  <nav class="nav">
+    <a href="index.html">← Voltar</a>
+    <div style="display:flex;gap:16px;align-items:center;">
+      <a href="#percursos">Percursos</a>
+      <a href="#contato">Contato</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="h1">Regulamento (versão web)</div>
+    <div class="sub">
+      Baseado no regulamento 2024 (modelo) — texto revisado para leitura no site. Ajustes finais e datas oficiais serão refletidos nas configurações do evento.
+    </div>
+
+    <div class="rule">
+      <div style="min-width:10px;height:10px;border-radius:99px;background:var(--reggae-green);margin-top:6px;"></div>
+      <div>
+        <b>Nota:</b> esta página serve como referência para atletas e staff. Em caso de divergência, vale a versão publicada pela organização.
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="tag"><i></i> Seções</div>
+
+    <div class="acc">
+      <details open>
+        <summary>
+          <span class="sum-title">1) Visão geral</span>
+          <span class="chev"></span>
+        </summary>
+        <div class="content">
+          <p>
+            Um percurso de 25 km ao longo do litoral de Niterói/RJ, com o objetivo de fomentar o esporte,
+            oferecer uma competição desafiadora e promover a integração entre remadores de canoa polinésia V1.
+          </p>
+          <ul>
+            <li><b>Local:</b> Praia de Itaipu (Niterói/RJ)</li>
+            <li><b>Base/Arena:</b> Camarote Itaipu</li>
+            <li><b>Distâncias:</b> 25 km (oficial), 12 km (amador), 1 km (kids), Petit (recreação)</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="sum-title">2) Programação (referência)</span>
+          <span class="chev"></span>
+        </summary>
+        <div class="content">
+          <ul>
+            <li><b>Check-in:</b> obrigatório (horário definido pela organização)</li>
+            <li><b>Largada:</b> 08h (referência do modelo 2024)</li>
+            <li><b>KIDS + Petit:</b> 11h (referência do modelo 2024)</li>
+            <li><b>Almoço / Premiação / Encerramento:</b> conforme programação oficial</li>
+          </ul>
+          <p><small class="muted">* A programação de 2026 será publicada/atualizada no Portal.</small></p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="sum-title">3) Categorias</span>
+          <span class="chev"></span>
+        </summary>
+        <div class="content">
+          <p>Categorias masculino e feminino. No modelo 2024:</p>
+          <ul>
+            <li><b>Recreação Petit:</b> 6 a 9 anos</li>
+            <li><b>KIDS:</b> 10 a 14 anos (1 km)</li>
+            <li><b>Amador:</b> 12 km</li>
+            <li><b>Junior:</b> 25 km</li>
+            <li><b>Open:</b> 25 km</li>
+            <li><b>Master 40+ / 50+ / 60+:</b> 25 km</li>
+            <li><b>Overall:</b> classificação geral por ordem de chegada (M/F)</li>
+          </ul>
+          <p><small class="muted">Após publicação da start list, não permitir troca de categoria (modelo 2024).</small></p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="sum-title">4) Largada e chegada (resumo)</span>
+          <span class="chev"></span>
+        </summary>
+        <div class="content">
+          <ul>
+            <li><b>Largada</b> com canoas na areia, no horário previsto.</li>
+            <li>Sistema CBVAA (modelo 2024): bandeira branca (alinhar), vermelha (atenção), verde (largar), preta (queima de largada).</li>
+            <li><b>Chegada</b> entre duas boias, com canoas paralelas à praia, com arbitragem no bote.</li>
+            <li>Antes da chegada, todos devem passar com o ombro direito na boia posicionada no meio da praia (modelo 2024).</li>
+          </ul>
+        </div>
+      </details>
+
+      <details id="percursos">
+        <summary>
+          <span class="sum-title">5) Percursos (mapas)</span>
+          <span class="chev"></span>
+        </summary>
+        <div class="content">
+          <div class="grid">
+            <div class="card full">
+              <div class="hd">
+                <div class="t">Oficial 25 km</div>
+                <div class="badge">25K</div>
+              </div>
+              <img src="assets/regulamento/percursos/percurso-25km.png" alt="Mapa do percurso oficial 25km">
+              <div class="bd">
+                Categorias Junior, Open e Masters (modelo 2024). O trajeto completo será explicado no briefing.
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="hd">
+                <div class="t">Amador 12 km</div>
+                <div class="badge">12K</div>
+              </div>
+              <img src="assets/regulamento/percursos/percurso-12km.png" alt="Mapa do percurso amador 12km">
+              <div class="bd">
+                Percurso amador (modelo 2024). O trajeto completo será explicado no briefing.
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="hd">
+                <div class="t">Recreação Petit (referência)</div>
+                <div class="badge">Petit</div>
+              </div>
+              <img src="assets/regulamento/percursos/percurso-petit-1km.png" alt="Mapa recreação Petit">
+              <div class="bd">
+                Recreação Petit (modelo 2024): apresentação da V1 para crianças, atividade na beira da praia, com medalha de participação.
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="sum-title">6) Segurança</span>
+          <span class="chev"></span>
+        </summary>
+        <div class="content">
+          <p><b>Obrigatório (modelo 2024):</b></p>
+          <ul>
+            <li>Colete auxiliar de flutuação e apito</li>
+            <li>Bailer preso na embarcação</li>
+            <li>Camisa oficial da prova</li>
+          </ul>
+          <p><b>Recomendado:</b></p>
+          <ul>
+            <li>Remo reserva preso na canoa</li>
+          </ul>
+          <p><small class="muted">Cobertura de apoio e arbitragem conforme organização do evento.</small></p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="sum-title">7) Premiação (referência)</span>
+          <span class="chev"></span>
+        </summary>
+        <div class="content">
+          <ul>
+            <li>Troféu do 1º ao 3º colocado por categoria (modelo 2024)</li>
+            <li>1º overall masculino e feminino (modelo 2024)</li>
+            <li>Medalhas de participação (Petit/Kids – referência)</li>
+            <li>Sorteios (referência)</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="sum-title">8) Responsabilidade e conduta</span>
+          <span class="chev"></span>
+        </summary>
+        <div class="content">
+          <p>
+            O competidor reconhece que remar é atividade com riscos inerentes. Em caso de menor de idade,
+            o responsável deve estar ciente e poderá ser solicitada assinatura de termo (modelo 2024).
+          </p>
+          <ul>
+            <li>Respeitar direitos e dignidade</li>
+            <li>Respeitar regras da prova e regras marítimas</li>
+            <li>Condutas contrárias podem resultar em desclassificação</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="hr"></div>
+
+    <div id="contato" class="tag"><i></i> Contato</div>
+    <div class="sub" style="margin-top:10px">
+      Contatos oficiais do evento serão publicados aqui. (No modelo 2024 havia WhatsApp, e-mail e Instagram.)
+    </div>
+  </div>
+</body>
+</html>

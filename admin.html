@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — V1 RJ 25K 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ocean: { DEFAULT:'#0B3D6B', light:'#1565A0', deep:'#071F35' },
+            coral: { DEFAULT:'#FF6B35', light:'#FF8C5A', dark:'#E84D1A' },
+            sand:  { DEFAULT:'#F4D58D', light:'#FAF0D7', dark:'#C9A84C' },
+            wave:  { DEFAULT:'#00B4D8', light:'#48CAE4' },
+          },
+          fontFamily: {
+            display: ['"Bebas Neue"', 'sans-serif'],
+            heading: ['"Barlow Condensed"', 'sans-serif'],
+            body:    ['"Barlow"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family:'Barlow',sans-serif; background:#071F35; color:#EDF6FF; overflow-x:hidden; }
+
+    .sidebar {
+      background: rgba(11,61,107,.7);
+      border-right: 1px solid rgba(0,180,216,.12);
+      backdrop-filter: blur(16px);
+      width: 240px;
+      min-height: 100vh;
+      position: fixed; top:0; left:0; z-index:50;
+      display: flex; flex-direction: column;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 20px;
+      font-family:'Barlow Condensed',sans-serif;
+      font-weight:600; font-size:.9rem; letter-spacing:.06em; text-transform:uppercase;
+      color:rgba(237,246,255,.5);
+      border-left: 3px solid transparent;
+      transition: all .2s; cursor:pointer;
+    }
+    .nav-item:hover { color:#EDF6FF; background:rgba(0,180,216,.08); }
+    .nav-item.active { color:#00B4D8; border-left-color:#00B4D8; background:rgba(0,180,216,.1); }
+
+    .main { margin-left:240px; padding:32px; }
+
+    .stat-card {
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(0,180,216,.15);
+      border-radius:16px; padding:24px;
+      backdrop-filter:blur(8px);
+    }
+    .stat-card .value { font-family:'Bebas Neue',sans-serif; font-size:2.8rem; line-height:1; }
+
+    /* Table */
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table th {
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:.75rem; font-weight:700;
+      letter-spacing:.1em; text-transform:uppercase;
+      color:rgba(0,180,216,.7);
+      padding:12px 16px; text-align:left;
+      border-bottom:1px solid rgba(0,180,216,.1);
+    }
+    .data-table td {
+      padding:12px 16px;
+      border-bottom:1px solid rgba(255,255,255,.04);
+      font-size:.9rem; color:rgba(237,246,255,.8);
+      vertical-align:middle;
+    }
+    .data-table tr:hover td { background:rgba(0,180,216,.05); }
+
+    .badge {
+      display:inline-block; padding:3px 10px; border-radius:999px;
+      font-family:'Barlow Condensed',sans-serif; font-size:.75rem;
+      font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    }
+    .badge-pago      { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.25); }
+    .badge-pendente  { background:rgba(244,213,141,.1); color:#F4D58D; border:1px solid rgba(244,213,141,.2); }
+    .badge-cancelado { background:rgba(255,107,53,.12); color:#FF6B35; border:1px solid rgba(255,107,53,.2); }
+
+    .btn-checkin {
+      padding:5px 12px; border-radius:8px; border:none; cursor:pointer;
+      font-family:'Barlow Condensed',sans-serif; font-size:.8rem;
+      font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+      transition:all .15s;
+    }
+    .btn-checkin.done { background:rgba(34,197,94,.2); color:#4ade80; border:1px solid rgba(34,197,94,.3); }
+    .btn-checkin.done:hover { background:rgba(34,197,94,.35); }
+    .btn-checkin.todo { background:rgba(0,180,216,.15); color:#00B4D8; border:1px solid rgba(0,180,216,.3); }
+    .btn-checkin.todo:hover { background:rgba(0,180,216,.3); }
+
+    .filter-select, .filter-input {
+      background:rgba(255,255,255,.06);
+      border:1.5px solid rgba(0,180,216,.2);
+      border-radius:8px; padding:8px 14px;
+      color:#EDF6FF;
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:.85rem; letter-spacing:.04em;
+      outline:none; transition:border-color .2s;
+    }
+    .filter-select:focus, .filter-input:focus { border-color:#00B4D8; }
+    select.filter-select option { background:#0B3D6B; }
+
+    .btn-export {
+      background:linear-gradient(135deg,#FF6B35,#E84D1A);
+      color:#fff; padding:9px 20px;
+      border-radius:8px; border:none; cursor:pointer;
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:.9rem; font-weight:700; letter-spacing:.06em;
+      text-transform:uppercase; transition:transform .15s;
+    }
+    .btn-export:hover { transform:translateY(-1px); }
+
+    #login-screen {
+      position:fixed; inset:0;
+      background:linear-gradient(135deg,#071F35 0%,#0B3D6B 100%);
+      display:flex; align-items:center; justify-content:center;
+      z-index:200;
+    }
+    .login-card {
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(0,180,216,.2);
+      border-radius:24px; padding:40px;
+      width:100%; max-width:400px;
+      backdrop-filter:blur(16px);
+    }
+    .login-input {
+      background:rgba(255,255,255,.07);
+      border:1.5px solid rgba(0,180,216,.25);
+      border-radius:8px; padding:12px 16px;
+      width:100%; color:#EDF6FF;
+      font-family:'Barlow',sans-serif; font-size:1rem; outline:none;
+      transition:border-color .2s; margin-bottom:12px;
+    }
+    .login-input:focus { border-color:#00B4D8; }
+    .login-btn {
+      background:linear-gradient(135deg,#FF6B35,#E84D1A);
+      color:#fff; width:100%; padding:14px;
+      border:none; border-radius:8px; cursor:pointer;
+      font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:.1em;
+      transition:opacity .2s;
+    }
+    .login-btn:hover { opacity:.9; }
+
+    .toast {
+      position:fixed; bottom:24px; right:24px; z-index:300;
+      background:rgba(11,61,107,.95); border:1px solid rgba(0,180,216,.3);
+      border-radius:12px; padding:16px 20px;
+      font-family:'Barlow Condensed',sans-serif; font-size:.9rem;
+      backdrop-filter:blur(16px);
+      transform:translateY(80px); opacity:0;
+      transition:all .3s ease; pointer-events:none;
+    }
+    .toast.show { transform:translateY(0); opacity:1; }
+
+    /* Mobile: hide sidebar, show hamburger */
+    @media(max-width:768px) {
+      .sidebar { display:none; }
+      .main { margin-left:0; padding:16px; }
+    }
+
+    .section { display:none; }
+    .section.active { display:block; }
+  </style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- ══ LOGIN ════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="text-center mb-8">
+      <div class="font-display text-4xl text-sand mb-1">V1 RJ 25K</div>
+      <div class="font-heading text-wave text-sm tracking-widest uppercase">Painel Administrativo</div>
+    </div>
+    <input class="login-input" type="email" id="login-email" placeholder="admin@v1rj.com.br" />
+    <input class="login-input" type="password" id="login-senha" placeholder="Senha" />
+    <p id="login-err" class="text-coral text-sm font-heading mb-3 hidden">E-mail ou senha inválidos.</p>
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <p class="text-center text-foam/30 text-xs mt-4 font-body">
+      Acesso restrito aos organizadores do V1 RJ 2026
+    </p>
+  </div>
+</div>
+
+<!-- ══ SIDEBAR ═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="p-6 border-b border-wave/10">
+    <div class="font-display text-2xl text-sand">V1 RJ</div>
+    <div class="font-heading text-xs text-wave/60 tracking-widest uppercase mt-0.5">Admin 2026</div>
+  </div>
+
+  <nav class="flex-1 py-4">
+    <div class="nav-item active" onclick="showSection('dashboard')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" onclick="showSection('atletas')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Atletas
+    </div>
+    <div class="nav-item" onclick="showSection('checkin')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Check-in
+    </div>
+    <div class="nav-item" onclick="showSection('largada')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Lista de Largada
+    </div>
+    <div class="nav-item" onclick="showSection('aluguel')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17 Q8 10 12 12 Q16 14 21 7"/></svg>
+      Aluguel Canoas
+    </div>
+  </nav>
+
+  <div class="p-4 border-t border-wave/10">
+    <button onclick="fazerLogout()"
+      class="w-full nav-item justify-center text-coral/70 hover:text-coral">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair
+    </button>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ── DASHBOARD ─────────────────────────────────────────── -->
+  <section id="sec-dashboard" class="section active">
+    <div class="mb-8">
+      <h1 class="font-display text-4xl text-sand">DASHBOARD</h1>
+      <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">V1 RJ 25K · 2026</p>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="stat-card">
+        <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Total Inscritos</p>
+        <div class="value text-sand" id="stat-total">—</div>
+        <p class="font-heading text-xs text-foam/30 mt-1">todos os status</p>
+      </div>
+      <div class="stat-card">
+        <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Pagos</p>
+        <div class="value text-green-400" id="stat-pagos">—</div>
+        <p class="font-heading text-xs text-foam/30 mt-1">confirmados</p>
+      </div>
+      <div class="stat-card">
+        <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Arrecadado</p>
+        <div class="value text-coral" style="font-size:1.8rem;" id="stat-arrecadado">—</div>
+        <p class="font-heading text-xs text-foam/30 mt-1">R$ total</p>
+      </div>
+      <div class="stat-card">
+        <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Check-ins</p>
+        <div class="value text-wave" id="stat-checkin">—</div>
+        <p class="font-heading text-xs text-foam/30 mt-1">no dia</p>
+      </div>
+    </div>
+
+    <!-- Gráfico simplificado por categoria -->
+    <div class="stat-card">
+      <h3 class="font-heading font-700 text-sand text-lg tracking-wide mb-4">VAGAS POR CATEGORIA</h3>
+      <div id="chart-categorias" class="space-y-4">
+        <div class="text-foam/30 font-heading tracking-widest text-sm">Carregando...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ATLETAS ───────────────────────────────────────────── -->
+  <section id="sec-atletas" class="section">
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+      <div>
+        <h1 class="font-display text-4xl text-sand">ATLETAS</h1>
+        <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Lista completa de inscritos</p>
+      </div>
+      <button class="btn-export" onclick="exportarCSV()">⬇ Exportar CSV</button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex flex-wrap gap-3 mb-6">
+      <input class="filter-input" type="text" id="filtro-nome" placeholder="🔍  Buscar nome ou CPF..." oninput="filtrarAtletas()" />
+      <select class="filter-select" id="filtro-categoria" onchange="filtrarAtletas()">
+        <option value="">Todas categorias</option>
+        <option value="Open">Open</option>
+        <option value="Master 40+">Master 40+</option>
+        <option value="Master 50+">Master 50+</option>
+        <option value="Master 60+">Master 60+</option>
+        <option value="Amador">Amador</option>
+        <option value="Junior">Junior</option>
+      </select>
+      <select class="filter-select" id="filtro-genero" onchange="filtrarAtletas()">
+        <option value="">Ambos gêneros</option>
+        <option value="M">Masculino</option>
+        <option value="F">Feminino</option>
+      </select>
+      <select class="filter-select" id="filtro-status" onchange="filtrarAtletas()">
+        <option value="">Todos status</option>
+        <option value="pago">Pago</option>
+        <option value="pendente">Pendente</option>
+        <option value="cancelado">Cancelado</option>
+      </select>
+    </div>
+
+    <!-- Tabela -->
+    <div class="overflow-x-auto rounded-xl" style="background:rgba(255,255,255,.02);border:1px solid rgba(0,180,216,.1);">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nº Peito</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Gênero</th>
+            <th>Clube</th>
+            <th>Estado</th>
+            <th>Camiseta</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-atletas">
+          <tr><td colspan="9" class="text-center text-foam/30 py-8 font-heading tracking-widest">Carregando dados...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p id="contagem-atletas" class="font-heading text-xs text-foam/30 tracking-widest uppercase mt-3"></p>
+  </section>
+
+  <!-- ── CHECK-IN ──────────────────────────────────────────── -->
+  <section id="sec-checkin" class="section">
+    <div class="mb-8">
+      <h1 class="font-display text-4xl text-sand">CHECK-IN</h1>
+      <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Marcar presença no dia do evento</p>
+    </div>
+
+    <div class="flex gap-3 mb-6">
+      <input class="filter-input flex-1" type="text" id="checkin-busca"
+        placeholder="🔍  Buscar por nome, CPF ou nº de peito..."
+        oninput="filtrarCheckin()" />
+      <select class="filter-select" id="checkin-filtro-status" onchange="filtrarCheckin()">
+        <option value="">Todos</option>
+        <option value="true">✅ Presentes</option>
+        <option value="false">⏳ Pendentes</option>
+      </select>
+    </div>
+
+    <div class="grid grid-cols-1 gap-3" id="checkin-lista">
+      <div class="text-foam/30 font-heading tracking-widest text-sm text-center py-8">Carregando...</div>
+    </div>
+  </section>
+
+  <!-- ── LISTA DE LARGADA ──────────────────────────────────── -->
+  <section id="sec-largada" class="section">
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+      <div>
+        <h1 class="font-display text-4xl text-sand">LISTA DE LARGADA</h1>
+        <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Apenas atletas com pagamento confirmado</p>
+      </div>
+      <div class="flex gap-3">
+        <button class="btn-export" onclick="exportarLargada('csv')">⬇ CSV</button>
+        <button class="btn-export" style="background:linear-gradient(135deg,#1565A0,#0B3D6B);" onclick="exportarLargada('print')">🖨 Imprimir</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-xl" style="background:rgba(255,255,255,.02);border:1px solid rgba(0,180,216,.1);">
+      <table class="data-table" id="tabela-largada-el">
+        <thead>
+          <tr>
+            <th style="width:80px">Nº Peito</th>
+            <th>Nome Completo</th>
+            <th>Categoria</th>
+            <th>Gênero</th>
+            <th>Clube</th>
+            <th>Estado</th>
+            <th>Check-in</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-largada">
+          <tr><td colspan="7" class="text-center text-foam/30 py-8 font-heading tracking-widest">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── ALUGUEL CANOAS ────────────────────────────────────── -->
+  <section id="sec-aluguel" class="section">
+    <div class="mb-8">
+      <h1 class="font-display text-4xl text-sand">ALUGUEL DE CANOAS</h1>
+      <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Interesse registrado pelos atletas</p>
+    </div>
+    <div id="aluguel-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="text-foam/30 font-heading tracking-widest text-sm text-center col-span-full py-8">Carregando...</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT ADMIN
+═══════════════════════════════════════════════════════════ -->
+<script>
+// ── CONFIG ─────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://SEU-PROJETO.supabase.co';
+const SUPABASE_ANON = 'SUA_ANON_KEY_AQUI';
+
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e) {}
+
+// ── ESTADO ─────────────────────────────────────────────────
+let todosAtletas  = [];
+let todosCheckin  = [];
+let listaLargada  = [];
+
+// ── LOGIN / AUTH ───────────────────────────────────────────
+async function fazerLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value;
+  const err   = document.getElementById('login-err');
+
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    // DEMO: senha demo
+    if (senha === 'admin2026') {
+      document.getElementById('login-screen').style.display = 'none';
+      initAdmin();
+    } else {
+      err.classList.remove('hidden');
+    }
+    return;
+  }
+
+  const { error } = await sb.auth.signInWithPassword({ email, password: senha });
+  if (error) { err.classList.remove('hidden'); return; }
+  err.classList.add('hidden');
+  document.getElementById('login-screen').style.display = 'none';
+  initAdmin();
+}
+
+async function fazerLogout() {
+  if (sb && !SUPABASE_URL.includes('SEU-PROJETO')) await sb.auth.signOut();
+  location.reload();
+}
+
+document.getElementById('login-senha').addEventListener('keydown', e => {
+  if (e.key === 'Enter') fazerLogin();
+});
+
+// Auto-login se já autenticado
+(async () => {
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    document.getElementById('login-screen').style.display = 'none';
+    initAdmin();
+  }
+})();
+
+// ── INICIALIZAR PAINEL ─────────────────────────────────────
+async function initAdmin() {
+  await Promise.all([
+    carregarDashboard(),
+    carregarAtletas(),
+    carregarLargada(),
+  ]);
+}
+
+// ── NAVEGAÇÃO ──────────────────────────────────────────────
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`sec-${name}`).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  if (name === 'checkin')  renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
+  if (name === 'aluguel')  carregarAluguel();
+}
+
+// ── DADOS MOCK ─────────────────────────────────────────────
+function getMockAtletas() {
+  const nomes = [
+    ['João Silva', 'M', 'Open', 'Clube Vela RJ', 'RJ'],
+    ['Maria Santos', 'F', 'Open', 'Hawaii Team', 'SP'],
+    ['Carlos Menezes', 'M', 'Master 40+', 'Outrigger Brasil', 'RJ'],
+    ['Ana Ferreira', 'F', 'Master 40+', 'Clube Náutico', 'RJ'],
+    ['Roberto Lima', 'M', 'Master 50+', 'Independente', 'MG'],
+    ['Fernanda Costa', 'F', 'Open', 'V1 Team SP', 'SP'],
+    ['Paulo Rocha', 'M', 'Amador', null, 'ES'],
+    ['Juliana Neves', 'F', 'Master 50+', 'Atlética Naval', 'RJ'],
+    ['Marcos Alves', 'M', 'Open', 'Team Coral', 'RJ'],
+    ['Patrícia Gomes', 'F', 'Amador', 'Surf Club', 'SC'],
+  ];
+
+  return nomes.map((n, i) => ({
+    id: `mock-${i}`,
+    numero_peito: i < 8 ? i + 1 : null,
+    nome_completo: n[0],
+    cpf: `${String(i+1).padStart(3,'0')}.${String(i+2).padStart(3,'0')}.${String(i+3).padStart(3,'0')}-0${i}`,
+    genero: n[1],
+    categoria: { nome: n[2] },
+    clube: n[3],
+    estado: n[4],
+    tamanho_camiseta: ['P','M','G','GG'][i%4],
+    status_pagamento: i < 8 ? 'pago' : 'pendente',
+    valor_pago: i < 8 ? 180 : null,
+    checkin: i < 3,
+    checkin_at: i < 3 ? new Date().toISOString() : null,
+    aluguel_canoa: i % 3 === 0,
+    email: `atleta${i}@email.com`,
+  }));
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────
+async function carregarDashboard() {
+  let stats, cats;
+
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    const mock = getMockAtletas();
+    stats = {
+      total_inscritos: mock.length,
+      total_pagos: mock.filter(a => a.status_pagamento === 'pago').length,
+      total_arrecadado: mock.filter(a => a.status_pagamento === 'pago').reduce((a,b) => a + (b.valor_pago||0), 0),
+      total_checkin: mock.filter(a => a.checkin).length,
+    };
+    cats = [
+      { nome:'Open',       genero:'M', inscritos_pagos:42, limite_vagas:80 },
+      { nome:'Open',       genero:'F', inscritos_pagos:28, limite_vagas:60 },
+      { nome:'Master 40+', genero:'M', inscritos_pagos:35, limite_vagas:60 },
+      { nome:'Master 40+', genero:'F', inscritos_pagos:18, limite_vagas:40 },
+      { nome:'Master 50+', genero:'M', inscritos_pagos:22, limite_vagas:40 },
+      { nome:'Master 50+', genero:'F', inscritos_pagos:10, limite_vagas:30 },
+    ];
+  } else {
+    const [r1, r2] = await Promise.all([
+      sb.from('vw_dashboard').select('*').single(),
+      sb.from('vw_vagas_categoria').select('*'),
+    ]);
+    stats = r1.data;
+    cats  = r2.data;
+  }
+
+  document.getElementById('stat-total').textContent      = stats.total_inscritos;
+  document.getElementById('stat-pagos').textContent      = stats.total_pagos;
+  document.getElementById('stat-arrecadado').textContent = `R$ ${Number(stats.total_arrecadado).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+  document.getElementById('stat-checkin').textContent    = stats.total_checkin;
+
+  const chart = document.getElementById('chart-categorias');
+  chart.innerHTML = cats.map(c => {
+    const pct = Math.min(100, Math.round((c.inscritos_pagos||0) / c.limite_vagas * 100));
+    const genLabel = c.genero === 'M' ? '♂' : '♀';
+    return `
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span class="font-heading font-700 text-foam/80">${genLabel} ${c.nome}</span>
+          <span class="font-heading text-wave/60">${c.inscritos_pagos||0} / ${c.limite_vagas}</span>
+        </div>
+        <div style="background:rgba(255,255,255,.07);border-radius:999px;height:8px;">
+          <div style="background:linear-gradient(90deg,#00B4D8,#FF6B35);border-radius:999px;height:8px;width:${pct}%;transition:width .8s ease;"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── ATLETAS ────────────────────────────────────────────────
+async function carregarAtletas() {
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    todosAtletas = getMockAtletas();
+    renderAtletas(todosAtletas);
+    return;
+  }
+
+  const { data, error } = await sb
+    .from('inscritos')
+    .select('*, categoria:categorias(nome)')
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error(error); return; }
+  todosAtletas = data || [];
+  renderAtletas(todosAtletas);
+}
+
+function renderAtletas(lista) {
+  const tbody = document.getElementById('tabela-atletas');
+  const count = document.getElementById('contagem-atletas');
+  count.textContent = `${lista.length} atleta${lista.length !== 1 ? 's' : ''}`;
+
+  if (!lista.length) {
+    tbody.innerHTML = `<tr><td colspan="9" class="text-center text-foam/30 py-8 font-heading tracking-widest">Nenhum resultado encontrado.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = lista.map(a => `
+    <tr>
+      <td class="font-display text-xl text-sand">${a.numero_peito ?? '—'}</td>
+      <td class="font-body font-500">${a.nome_completo}</td>
+      <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:#00B4D8;">${a.categoria?.nome || '—'}</span></td>
+      <td class="font-heading text-sm">${a.genero === 'M' ? '♂ Masc' : '♀ Fem'}</td>
+      <td class="text-foam/50 text-sm">${a.clube || 'Independente'}</td>
+      <td class="font-heading text-sm text-foam/50">${a.estado || '—'}</td>
+      <td class="font-heading font-700 text-sm">${a.tamanho_camiseta}</td>
+      <td><span class="badge badge-${a.status_pagamento}">${a.status_pagamento}</span></td>
+      <td>
+        <button onclick="toggleCheckin('${a.id}', ${!a.checkin})"
+          class="btn-checkin ${a.checkin ? 'done' : 'todo'}">
+          ${a.checkin ? '✅ Ok' : 'Check-in'}
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filtrarAtletas() {
+  const nome   = document.getElementById('filtro-nome').value.toLowerCase();
+  const cat    = document.getElementById('filtro-categoria').value;
+  const gen    = document.getElementById('filtro-genero').value;
+  const status = document.getElementById('filtro-status').value;
+
+  const filtrados = todosAtletas.filter(a => {
+    const matchNome   = !nome   || a.nome_completo.toLowerCase().includes(nome) || a.cpf?.includes(nome);
+    const matchCat    = !cat    || a.categoria?.nome === cat;
+    const matchGen    = !gen    || a.genero === gen;
+    const matchStatus = !status || a.status_pagamento === status;
+    return matchNome && matchCat && matchGen && matchStatus;
+  });
+
+  renderAtletas(filtrados);
+}
+
+// ── CHECK-IN ───────────────────────────────────────────────
+function renderCheckin(lista) {
+  todosCheckin = lista;
+  filtrarCheckin();
+}
+
+function filtrarCheckin() {
+  const busca  = document.getElementById('checkin-busca').value.toLowerCase();
+  const status = document.getElementById('checkin-filtro-status').value;
+
+  const pagos = todosAtletas.filter(a => a.status_pagamento === 'pago');
+  const filtrados = pagos.filter(a => {
+    const matchBusca  = !busca || a.nome_completo.toLowerCase().includes(busca)
+                                || String(a.numero_peito).includes(busca)
+                                || (a.cpf||'').includes(busca);
+    const matchStatus = !status || String(a.checkin) === status;
+    return matchBusca && matchStatus;
+  });
+
+  const el = document.getElementById('checkin-lista');
+  if (!filtrados.length) {
+    el.innerHTML = `<div class="text-foam/30 font-heading tracking-widest text-sm text-center py-8">Nenhum atleta encontrado.</div>`;
+    return;
+  }
+
+  el.innerHTML = filtrados.map(a => `
+    <div id="ci-${a.id}" class="flex items-center justify-between p-4 rounded-xl transition-all"
+      style="background:${a.checkin ? 'rgba(34,197,94,.06)' : 'rgba(255,255,255,.03)'};border:1px solid ${a.checkin ? 'rgba(34,197,94,.2)' : 'rgba(0,180,216,.1)'};">
+      <div class="flex items-center gap-4">
+        <div class="font-display text-3xl text-sand w-16 text-center">${a.numero_peito ?? '—'}</div>
+        <div>
+          <p class="font-heading font-700 text-foam text-lg leading-tight">${a.nome_completo}</p>
+          <p class="font-body text-xs text-foam/40">${a.categoria?.nome || '—'} · ${a.genero === 'M' ? 'Masculino' : 'Feminino'} · ${a.clube || 'Independente'}</p>
+          ${a.checkin ? `<p class="font-body text-xs text-green-400/60 mt-0.5">✅ Check-in realizado</p>` : ''}
+        </div>
+      </div>
+      <button onclick="toggleCheckin('${a.id}', ${!a.checkin})"
+        class="btn-checkin ${a.checkin ? 'done' : 'todo'} text-base px-6 py-3">
+        ${a.checkin ? '✅ Presente' : 'Marcar Presença'}
+      </button>
+    </div>
+  `).join('');
+}
+
+async function toggleCheckin(id, novoStatus) {
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    // Demo
+    const atleta = todosAtletas.find(a => a.id === id);
+    if (atleta) {
+      atleta.checkin = novoStatus;
+      atleta.checkin_at = novoStatus ? new Date().toISOString() : null;
+    }
+    filtrarAtletas();
+    renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
+    showToast(novoStatus ? '✅ Check-in realizado!' : '↩ Check-in desfeito');
+    return;
+  }
+
+  const { error } = await sb.from('inscritos')
+    .update({ checkin: novoStatus, checkin_at: novoStatus ? new Date().toISOString() : null })
+    .eq('id', id);
+
+  if (error) { showToast('❌ Erro ao atualizar check-in'); return; }
+
+  const atleta = todosAtletas.find(a => a.id === id);
+  if (atleta) { atleta.checkin = novoStatus; atleta.checkin_at = novoStatus ? new Date().toISOString() : null; }
+
+  filtrarAtletas();
+  renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
+  await carregarDashboard();
+  showToast(novoStatus ? '✅ Check-in realizado!' : '↩ Check-in desfeito');
+}
+
+// ── LISTA DE LARGADA ───────────────────────────────────────
+async function carregarLargada() {
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    listaLargada = getMockAtletas()
+      .filter(a => a.status_pagamento === 'pago')
+      .sort((a,b) => (a.numero_peito||999) - (b.numero_peito||999));
+  } else {
+    const { data } = await sb.from('vw_lista_largada').select('*');
+    listaLargada = data || [];
+  }
+
+  const tbody = document.getElementById('tabela-largada');
+  tbody.innerHTML = listaLargada.map(a => `
+    <tr>
+      <td class="font-display text-2xl text-sand">${a.numero_peito}</td>
+      <td class="font-body font-500">${a.nome_completo}</td>
+      <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#00B4D8;">${a.categoria?.nome || a.categoria || '—'}</span></td>
+      <td>${a.genero === 'M' ? '♂' : '♀'}</td>
+      <td class="text-foam/50 text-sm">${a.clube || 'Independente'}</td>
+      <td class="font-heading text-foam/50">${a.estado || '—'}</td>
+      <td>${a.checkin ? '<span class="badge badge-pago">✅ Sim</span>' : '<span class="badge badge-pendente">Pendente</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+// ── ALUGUEL ────────────────────────────────────────────────
+async function carregarAluguel() {
+  const el = document.getElementById('aluguel-lista');
+
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    const interessados = getMockAtletas().filter(a => a.aluguel_canoa);
+    el.innerHTML = interessados.length
+      ? interessados.map(a => `
+        <div class="stat-card">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg" style="background:rgba(255,107,53,.15)">🛶</div>
+            <div>
+              <p class="font-heading font-700 text-foam leading-tight">${a.nome_completo}</p>
+              <p class="font-body text-xs text-foam/40">${a.categoria?.nome || '—'} · ${a.estado}</p>
+            </div>
+          </div>
+          <a href="mailto:${a.email}" class="text-wave text-sm font-heading hover:underline">${a.email}</a>
+        </div>
+      `).join('')
+      : `<div class="text-foam/30 font-heading tracking-widest text-sm text-center col-span-full py-8">Nenhum interesse registrado ainda.</div>`;
+    return;
+  }
+
+  const { data } = await sb.from('aluguel_canoas').select('*, inscrito:inscritos(nome_completo, email, estado)').eq('ativo', true);
+  if (!data?.length) {
+    el.innerHTML = `<div class="text-foam/30 col-span-full text-center py-8 font-heading tracking-widest">Nenhum registro.</div>`;
+    return;
+  }
+  el.innerHTML = data.map(r => `
+    <div class="stat-card">
+      <span class="badge ${r.tipo === 'oferta' ? 'badge-pago' : 'badge-pendente'} mb-3">${r.tipo === 'oferta' ? '🤝 Oferta' : '🔍 Procura'}</span>
+      <p class="font-heading font-700 text-foam">${r.inscrito?.nome_completo || 'Anônimo'}</p>
+      <p class="text-foam/50 text-sm mt-1">${r.mensagem || '—'}</p>
+      <a href="mailto:${r.contato}" class="text-wave text-sm font-heading hover:underline mt-2 block">${r.contato}</a>
+    </div>
+  `).join('');
+}
+
+// ── EXPORTAÇÕES ────────────────────────────────────────────
+function exportarCSV() {
+  const filtrados = todosAtletas;
+  const cabecalho = ['Nº Peito','Nome','CPF','Categoria','Gênero','Clube','Estado','Camiseta','Status','Check-in','E-mail'];
+  const linhas = filtrados.map(a => [
+    a.numero_peito ?? '',
+    a.nome_completo,
+    a.cpf,
+    a.categoria?.nome || '',
+    a.genero === 'M' ? 'Masculino' : 'Feminino',
+    a.clube || 'Independente',
+    a.estado || '',
+    a.tamanho_camiseta,
+    a.status_pagamento,
+    a.checkin ? 'Sim' : 'Não',
+    a.email,
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+
+  const csv = [cabecalho.join(','), ...linhas].join('\n');
+  download(csv, 'atletas_v1rj_2026.csv', 'text/csv;charset=utf-8;');
+  showToast('📥 CSV exportado com sucesso!');
+}
+
+function exportarLargada(modo) {
+  if (modo === 'print') {
+    window.print();
+    return;
+  }
+  const cabecalho = ['Nº Peito','Nome Completo','Categoria','Gênero','Clube','Estado','Check-in'];
+  const linhas = listaLargada.map(a => [
+    a.numero_peito,
+    a.nome_completo,
+    a.categoria?.nome || a.categoria || '',
+    a.genero === 'M' ? 'Masculino' : 'Feminino',
+    a.clube || 'Independente',
+    a.estado || '',
+    a.checkin ? 'Sim' : 'Não',
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+
+  const csv = [cabecalho.join(','), ...linhas].join('\n');
+  download(csv, 'lista_largada_v1rj_2026.csv', 'text/csv;charset=utf-8;');
+  showToast('📥 Lista de largada exportada!');
+}
+
+function download(content, filename, type) {
+  const blob = new Blob(['\uFEFF' + content], { type });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── TOAST ──────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

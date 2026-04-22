@@ -204,6 +204,13 @@
   </div>
 
   <nav class="flex-1 py-4">
+    <div class="nav-item" onclick="showSection('config')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-1.41 3.41h-.2a2 2 0 0 1-1.86-1.26 1.65 1.65 0 0 0-1.54-1H12a1.65 1.65 0 0 0-1.54 1A2 2 0 0 1 8.6 20.29h-.2a2 2 0 0 1-1.41-3.41l.06-.06A1.65 1.65 0 0 0 7.4 15a1.65 1.65 0 0 0-1-1.54A2 2 0 0 1 5.71 11.6v-.2a2 2 0 0 1 1.26-1.86 1.65 1.65 0 0 0 1-1.54A1.65 1.65 0 0 0 7.4 6a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 0 1 8.42.71h.2A2 2 0 0 1 10.48 2a1.65 1.65 0 0 0 1.54 1H12A1.65 1.65 0 0 0 13.54 2 2 2 0 0 1 15.4.71h.2a2 2 0 0 1 1.41 3.41l-.06.06A1.65 1.65 0 0 0 16.6 6c0 .63.37 1.2 1 1.54A2 2 0 0 1 18.29 11.4v.2a2 2 0 0 1-1.26 1.86 1.65 1.65 0 0 0-1 1.54z"></path>
+    </svg>
+  Configurações
+    </div>
     <div class="nav-item active" onclick="showSection('dashboard')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       Dashboard
@@ -402,6 +409,50 @@
       <div class="text-foam/30 font-heading tracking-widest text-sm text-center col-span-full py-8">Carregando...</div>
     </div>
   </section>
+  <section id="sec-config" class="section">
+  <div class="mb-8">
+    <h1 class="font-display text-4xl text-sand">CONFIGURAÇÕES</h1>
+    <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Dados do evento (linha única)</p>
+  </div>
+
+  <div class="stat-card" style="max-width:720px;">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div class="md:col-span-2">
+        <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Nome do evento</label>
+        <input id="cfg-nome" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="V1 RJ 25K 2026">
+      </div>
+
+      <div>
+        <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Data da prova</label>
+        <input id="cfg-data" type="date" class="login-input" style="margin-top:6px;margin-bottom:0;">
+      </div>
+
+      <div>
+        <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Limite global de vagas</label>
+        <input id="cfg-limite" type="number" min="1" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="200">
+      </div>
+
+      <div>
+        <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Preço global (R$)</label>
+        <input id="cfg-preco" type="number" min="0" step="0.01" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="180.00">
+      </div>
+
+      <div class="flex items-center gap-3" style="margin-top:6px;">
+        <input id="cfg-abertas" type="checkbox" style="width:16px;height:16px;accent-color:#00B4D8;">
+        <label for="cfg-abertas" class="font-heading text-foam/70 tracking-widest uppercase text-xs">Inscrições abertas</label>
+      </div>
+
+      <div class="md:col-span-2" style="margin-top:10px;">
+        <button class="btn-export" onclick="salvarConfiguracoes()">💾 Salvar</button>
+      </div>
+
+      <p class="font-heading text-foam/30 tracking-widest uppercase text-xs md:col-span-2" id="cfg-hint" style="margin-top:6px;">
+        Carregando configurações...
+      </p>
+    </div>
+  </div>
+</section>
 
 </main>
 
@@ -409,6 +460,7 @@
      JAVASCRIPT ADMIN
 ═══════════════════════════════════════════════════════════ -->
 <script>
+let cfgEvento = null;  
 // ── CONFIG ─────────────────────────────────────────────────
 const SUPABASE_URL  = 'https://SEU-PROJETO.supabase.co';
 const SUPABASE_ANON = 'SUA_ANON_KEY_AQUI';
@@ -470,7 +522,88 @@ async function initAdmin() {
     carregarDashboard(),
     carregarAtletas(),
     carregarLargada(),
+    carregarConfigEvento(),
   ]);
+}
+  async function carregarConfigEvento() {
+  const hint = document.getElementById('cfg-hint');
+
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    // Demo
+    cfgEvento = {
+      id: 'demo',
+      nome_evento: 'V1 RJ 25K 2026',
+      data_prova: '2026-10-17',
+      limite_vagas_global: 200,
+      inscricoes_abertas: true,
+      preco_inscricao: 180.00,
+    };
+    preencherFormConfig(cfgEvento);
+    hint.textContent = 'Modo demo: ajustes não são gravados no Supabase.';
+    return;
+  }
+
+  const { data, error } = await sb
+    .from('configuracoes_evento')
+    .select('*')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    hint.textContent = 'Não foi possível carregar configurações.';
+    console.error(error);
+    return;
+  }
+
+  cfgEvento = data;
+  preencherFormConfig(cfgEvento);
+  hint.textContent = 'Configurações carregadas.';
+}
+
+function preencherFormConfig(cfg) {
+  document.getElementById('cfg-nome').value   = cfg.nome_evento || '';
+  document.getElementById('cfg-data').value   = cfg.data_prova || '';
+  document.getElementById('cfg-limite').value = cfg.limite_vagas_global ?? 200;
+  document.getElementById('cfg-abertas').checked = !!cfg.inscricoes_abertas;
+
+  // preço pode ser null se coluna acabou de ser criada
+  const p = (cfg.preco_inscricao ?? 180.00);
+  document.getElementById('cfg-preco').value = Number(p).toFixed(2);
+}
+
+async function salvarConfiguracoes() {
+  if (!cfgEvento) { showToast('❌ Config não carregada'); return; }
+
+  const payload = {
+    nome_evento: document.getElementById('cfg-nome').value.trim() || 'V1 RJ 25K 2026',
+    data_prova: document.getElementById('cfg-data').value || '2026-10-17',
+    limite_vagas_global: Number(document.getElementById('cfg-limite').value || 200),
+    inscricoes_abertas: document.getElementById('cfg-abertas').checked,
+    preco_inscricao: Number(document.getElementById('cfg-preco').value || 180.00),
+    updated_at: new Date().toISOString(),
+  };
+
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    cfgEvento = { ...cfgEvento, ...payload };
+    preencherFormConfig(cfgEvento);
+    showToast('💾 Salvo (demo)');
+    return;
+  }
+
+  const { error } = await sb
+    .from('configuracoes_evento')
+    .update(payload)
+    .eq('id', cfgEvento.id);
+
+  if (error) {
+    console.error(error);
+    showToast('❌ Erro ao salvar');
+    return;
+  }
+
+  showToast('✅ Configurações salvas');
+  await carregarConfigEvento();
 }
 
 // ── NAVEGAÇÃO ──────────────────────────────────────────────

@@ -631,7 +631,7 @@ footer{background:var(--ocean-deep);border-top:1px solid rgba(0,194,212,.09);pad
  * - Em produção (GitHub Pages), configure SUPABASE_URL e SUPABASE_ANON.
  * - Mantém fallback local para site não quebrar.
  */
-let PRECO_GLOBAL = 180.00;
+
 const SUPABASE_URL='https://SEU-PROJETO.supabase.co';
 const SUPABASE_ANON='SUA_ANON_KEY';
 let sb=null; try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON); }catch(e){}
@@ -644,6 +644,7 @@ let EVENT_DATE_ISO = '2026-10-17T08:00:00-03:00';
 let EVENT_NAME = 'V1 RJ 25K 2026';
 let INSCRICOES_ABERTAS = true;
 let LIMITE_VAGAS = 200;
+let PRECO_GLOBAL = 180.00;  
 
 /* ── Stars ─────────────────────────────────────────────── */
 (()=>{const c=document.getElementById('stars');[[12,10],[28,20],[8,38],[44,12],[60,7],[74,18],[90,10],[97,28],[66,44],[18,54],[36,62],[80,52],[52,70],[6,72],[86,65],[22,80],[48,85],[70,75]].forEach(([x,y],i)=>{const s=document.createElement('div');const sz=i%3===0?5:i%3===1?4:3;s.className='star';s.style.cssText=`left:${x}%;top:${y}%;width:${sz}px;height:${sz}px;--d:${3+Math.random()*4}s;--dl:${Math.random()*5}s;--op:${.3+Math.random()*.5};position:absolute;`;c.appendChild(s);});})();
@@ -770,7 +771,7 @@ async function atualizarCat(){
   // mock / placeholder: valores configuráveis no admin no futuro
   document.getElementById('cat-id').value='mock';
   catNow={nome:r.nome};
-  valor=r.nome==='Junior'?150:180;
+  valor = PRECO_GLOBAL;
 }
 document.getElementById('nasc').addEventListener('change',atualizarCat);
 document.getElementById('gen').addEventListener('change',atualizarCat);

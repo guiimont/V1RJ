@@ -652,7 +652,7 @@ let LIMITE_VAGAS = 200;
 /* ── Utils ─────────────────────────────────────────────── */
 const fmtCPF=v=>v.replace(/\D/g,'').slice(0,11).replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
 const fmtTel=v=>{v=v.replace(/\D/g,'').slice(0,11);return v.length<=10?v.replace(/(\d{2})(\d{4})(\d*)/,'($1) $2-$3'):v.replace(/(\d{2})(\d{5})(\d*)/,'($1) $2-$3');};
-function validCPF(c){c=c.replace(/\D/g,'');if(c.length!==11||/^(\d)\1{10}$/.test(c))return false;let s=0,r;for(let i=1;i<=9;i++)s+=+c[i-1]*(11-i);r=s*10%11;if(r>9)r=0;if(r!==+c[9])return false;s=0;for(let i=1;i<=10;i++)s+=+c[i-1]*(12-i);r=s*10%11;if(r>9)r=0;return r===+c[10];}
+function validCPF(c){c=c.replace(/\D/g,'');if(c.length!==11||/^(\d)\1{10}$/.test(c))return false;let s=0,r;for(let i=1;i<=9;i++)s+=+c[i-1]*(11-i);r=s*10%11;if(r>9)r=0;if(r!==+c[9])return false;s=0;for(let i=1;i<=10;i++)s+=+c[i-1]*(12-i);r= s * 10 % 11;if(r>9)r=0;return r===+c[10];}
 
 /* ── Carregar config do Supabase ────────────────────────── */
 async function loadEventConfig() {
@@ -660,6 +660,7 @@ async function loadEventConfig() {
   if (!sb || SUPABASE_URL.includes('SEU-PROJETO') || SUPABASE_ANON.includes('SUA_ANON_KEY')) {
     applyEventConfigToUI();
     startCountdown();
+    valor = PRECO_GLOBAL;
     return;
   }
 

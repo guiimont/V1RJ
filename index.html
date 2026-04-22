@@ -640,11 +640,11 @@ let sb=null; try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON); }catch(e
  * Fallback (se Supabase não estiver pronto):
  * 17/10/2026 08:00
  */
+let PRECO_GLOBAL = 180.00;
 let EVENT_DATE_ISO = '2026-10-17T08:00:00-03:00';
 let EVENT_NAME = 'V1 RJ 25K 2026';
 let INSCRICOES_ABERTAS = true;
-let LIMITE_VAGAS = 200;
-let PRECO_GLOBAL = 180.00;  
+let LIMITE_VAGAS = 200; 
 
 /* ── Stars ─────────────────────────────────────────────── */
 (()=>{const c=document.getElementById('stars');[[12,10],[28,20],[8,38],[44,12],[60,7],[74,18],[90,10],[97,28],[66,44],[18,54],[36,62],[80,52],[52,70],[6,72],[86,65],[22,80],[48,85],[70,75]].forEach(([x,y],i)=>{const s=document.createElement('div');const sz=i%3===0?5:i%3===1?4:3;s.className='star';s.style.cssText=`left:${x}%;top:${y}%;width:${sz}px;height:${sz}px;--d:${3+Math.random()*4}s;--dl:${Math.random()*5}s;--op:${.3+Math.random()*.5};position:absolute;`;c.appendChild(s);});})();
@@ -655,38 +655,39 @@ const fmtTel=v=>{v=v.replace(/\D/g,'').slice(0,11);return v.length<=10?v.replace
 function validCPF(c){c=c.replace(/\D/g,'');if(c.length!==11||/^(\d)\1{10}$/.test(c))return false;let s=0,r;for(let i=1;i<=9;i++)s+=+c[i-1]*(11-i);r=s*10%11;if(r>9)r=0;if(r!==+c[9])return false;s=0;for(let i=1;i<=10;i++)s+=+c[i-1]*(12-i);r=s*10%11;if(r>9)r=0;return r===+c[10];}
 
 /* ── Carregar config do Supabase ────────────────────────── */
-async function loadEventConfig(){
-  .select('nome_evento, inscricoes_abertas, limite_vagas_global, preco_inscricao, data_prova, updated_at')
+async function loadEventConfig() {
   // Se não configurou supabase ainda, mantém fallback silencioso
-  if (data.preco_inscricao != null) {
-  PRECO_GLOBAL = Number(data.preco_inscricao);
-}
-  if(!sb || SUPABASE_URL.includes('SEU-PROJETO') || SUPABASE_ANON.includes('SUA_ANON_KEY')) {
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO') || SUPABASE_ANON.includes('SUA_ANON_KEY')) {
     applyEventConfigToUI();
     startCountdown();
     return;
   }
 
-  try{
+  try {
     const { data, error } = await sb
       .from('configuracoes_evento')
-      .select('nome_evento, inscricoes_abertas, limite_vagas_global, data_prova, updated_at')
+      .select('nome_evento, inscricoes_abertas, limite_vagas_global, preco_inscricao, data_prova, updated_at')
       .order('updated_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    if(error) throw error;
-    if(data){
+    if (error) throw error;
+
+    if (data) {
       EVENT_NAME = data.nome_evento || EVENT_NAME;
       INSCRICOES_ABERTAS = (data.inscricoes_abertas ?? INSCRICOES_ABERTAS);
       LIMITE_VAGAS = (data.limite_vagas_global ?? LIMITE_VAGAS);
 
-      if(data.data_prova){
+      if (data.preco_inscricao != null) {
+        PRECO_GLOBAL = Number(data.preco_inscricao);
+      }
+
+      if (data.data_prova) {
         // data_prova é DATE no supabase -> "YYYY-MM-DD"
         EVENT_DATE_ISO = `${data.data_prova}T08:00:00-03:00`;
       }
     }
-  }catch(e){
+  } catch (e) {
     // Mantém fallback; não quebra a página
     console.warn('[configuracoes_evento] fallback:', e?.message || e);
   }

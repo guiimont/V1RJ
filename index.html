@@ -631,6 +631,7 @@ footer{background:var(--ocean-deep);border-top:1px solid rgba(0,194,212,.09);pad
  * - Em produção (GitHub Pages), configure SUPABASE_URL e SUPABASE_ANON.
  * - Mantém fallback local para site não quebrar.
  */
+let PRECO_GLOBAL = 180.00;
 const SUPABASE_URL='https://SEU-PROJETO.supabase.co';
 const SUPABASE_ANON='SUA_ANON_KEY';
 let sb=null; try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON); }catch(e){}
@@ -654,7 +655,11 @@ function validCPF(c){c=c.replace(/\D/g,'');if(c.length!==11||/^(\d)\1{10}$/.test
 
 /* ── Carregar config do Supabase ────────────────────────── */
 async function loadEventConfig(){
+  .select('nome_evento, inscricoes_abertas, limite_vagas_global, preco_inscricao, data_prova, updated_at')
   // Se não configurou supabase ainda, mantém fallback silencioso
+  if (data.preco_inscricao != null) {
+  PRECO_GLOBAL = Number(data.preco_inscricao);
+}
   if(!sb || SUPABASE_URL.includes('SEU-PROJETO') || SUPABASE_ANON.includes('SUA_ANON_KEY')) {
     applyEventConfigToUI();
     startCountdown();

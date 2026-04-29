@@ -885,18 +885,30 @@ document.getElementById('form').addEventListener('submit',async function(e){
     status_pagamento:'pendente',
   };
 
-  try{
-    let id;
-    if(!sb || SUPABASE_URL.includes('SEU-PROJETO')){
-      // Demo
-      id='demo-'+Date.now();
-      console.log('📋 Payload Supabase:',payload);
-    }else{
-      const { data, error } = await sb.from('inscritos').insert(payload).select('id').single();
-      if(error) throw new Error(error.message);
-      id=data.id;
-    }
+  try {
+  let id;
 
+  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
+    // Demo
+    id = 'demo-' + Date.now();
+    console.log('📋 Payload Supabase:', payload);
+  } else {
+    const { data, error } = await sb
+      .from('inscritos')
+      .insert(payload)
+      .select('id')
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    id = data.id; // <-- ESTA é a linha correta
+  }
+
+  // ...continua seu fluxo (checkout / alertas etc.)
+} catch (err) {
+  console.error('[Checkout]', err);
+  // ...seu tratamento de erro
+}
     document.getElementById('lmsg').textContent='Preparando checkout...';
 
     if(SUPABASE_URL.includes('SEU-PROJETO')){

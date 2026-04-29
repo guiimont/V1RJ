@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — V1 RJ 25K 2026</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet" />
@@ -15,13 +16,14 @@
           colors: {
             ocean: { DEFAULT:'#0B3D6B', light:'#1565A0', deep:'#071F35' },
             coral: { DEFAULT:'#FF6B35', light:'#FF8C5A', dark:'#E84D1A' },
-            sand:  { DEFAULT:'#F4D58D', light:'#FAF0D7', dark:'#C9A84C' },
-            wave:  { DEFAULT:'#00B4D8', light:'#48CAE4' },
+            sand: { DEFAULT:'#F4D58D', light:'#FAF0D7', dark:'#C9A84C' },
+            wave: { DEFAULT:'#00B4D8', light:'#48CAE4' },
+            foam: { DEFAULT:'#EDF6FF' },
           },
           fontFamily: {
             display: ['"Bebas Neue"', 'sans-serif'],
             heading: ['"Barlow Condensed"', 'sans-serif'],
-            body:    ['"Barlow"', 'sans-serif'],
+            body: ['"Barlow"', 'sans-serif'],
           }
         }
       }
@@ -40,6 +42,7 @@
       position: fixed; top:0; left:0; z-index:50;
       display: flex; flex-direction: column;
     }
+
     .nav-item {
       display: flex; align-items: center; gap: 10px;
       padding: 12px 20px;
@@ -48,6 +51,7 @@
       color:rgba(237,246,255,.5);
       border-left: 3px solid transparent;
       transition: all .2s; cursor:pointer;
+      user-select:none;
     }
     .nav-item:hover { color:#EDF6FF; background:rgba(0,180,216,.08); }
     .nav-item.active { color:#00B4D8; border-left-color:#00B4D8; background:rgba(0,180,216,.1); }
@@ -71,11 +75,12 @@
       color:rgba(0,180,216,.7);
       padding:12px 16px; text-align:left;
       border-bottom:1px solid rgba(0,180,216,.1);
+      white-space:nowrap;
     }
     .data-table td {
       padding:12px 16px;
       border-bottom:1px solid rgba(255,255,255,.04);
-      font-size:.9rem; color:rgba(237,246,255,.8);
+      font-size:.9rem; color:rgba(237,246,255,.85);
       vertical-align:middle;
     }
     .data-table tr:hover td { background:rgba(0,180,216,.05); }
@@ -84,9 +89,10 @@
       display:inline-block; padding:3px 10px; border-radius:999px;
       font-family:'Barlow Condensed',sans-serif; font-size:.75rem;
       font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+      white-space:nowrap;
     }
-    .badge-pago      { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.25); }
-    .badge-pendente  { background:rgba(244,213,141,.1); color:#F4D58D; border:1px solid rgba(244,213,141,.2); }
+    .badge-pago { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.25); }
+    .badge-pendente { background:rgba(244,213,141,.1); color:#F4D58D; border:1px solid rgba(244,213,141,.2); }
     .badge-cancelado { background:rgba(255,107,53,.12); color:#FF6B35; border:1px solid rgba(255,107,53,.2); }
 
     .btn-checkin {
@@ -94,6 +100,7 @@
       font-family:'Barlow Condensed',sans-serif; font-size:.8rem;
       font-weight:700; letter-spacing:.04em; text-transform:uppercase;
       transition:all .15s;
+      white-space:nowrap;
     }
     .btn-checkin.done { background:rgba(34,197,94,.2); color:#4ade80; border:1px solid rgba(34,197,94,.3); }
     .btn-checkin.done:hover { background:rgba(34,197,94,.35); }
@@ -119,8 +126,20 @@
       font-family:'Barlow Condensed',sans-serif;
       font-size:.9rem; font-weight:700; letter-spacing:.06em;
       text-transform:uppercase; transition:transform .15s;
+      white-space:nowrap;
     }
     .btn-export:hover { transform:translateY(-1px); }
+
+    .btn-soft {
+      background:linear-gradient(135deg,#1565A0,#0B3D6B);
+      color:#fff; padding:9px 18px;
+      border-radius:8px; border:none; cursor:pointer;
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:.9rem; font-weight:700; letter-spacing:.06em;
+      text-transform:uppercase; transition:transform .15s;
+      white-space:nowrap;
+    }
+    .btn-soft:hover { transform:translateY(-1px); }
 
     #login-screen {
       position:fixed; inset:0;
@@ -132,7 +151,7 @@
       background:rgba(255,255,255,.05);
       border:1px solid rgba(0,180,216,.2);
       border-radius:24px; padding:40px;
-      width:100%; max-width:400px;
+      width:100%; max-width:420px;
       backdrop-filter:blur(16px);
     }
     .login-input {
@@ -148,7 +167,8 @@
       background:linear-gradient(135deg,#FF6B35,#E84D1A);
       color:#fff; width:100%; padding:14px;
       border:none; border-radius:8px; cursor:pointer;
-      font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:.1em;
+      font-family:'Bebas Neue',sans-serif; font-size:1.3rem;
+      letter-spacing:.1em;
       transition:opacity .2s;
     }
     .login-btn:hover { opacity:.9; }
@@ -161,10 +181,10 @@
       backdrop-filter:blur(16px);
       transform:translateY(80px); opacity:0;
       transition:all .3s ease; pointer-events:none;
+      max-width:min(460px, calc(100vw - 48px));
     }
     .toast.show { transform:translateY(0); opacity:1; }
 
-    /* Mobile: hide sidebar, show hamburger */
     @media(max-width:768px) {
       .sidebar { display:none; }
       .main { margin-left:0; padding:16px; }
@@ -174,797 +194,1192 @@
     .section.active { display:block; }
   </style>
 </head>
+
 <body>
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
 
-<!-- TOAST -->
-<div id="toast" class="toast"></div>
-
-<!-- ══ LOGIN ════════════════════════════════════════════════ -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="text-center mb-8">
-      <div class="font-display text-4xl text-sand mb-1">V1 RJ 25K</div>
-      <div class="font-heading text-wave text-sm tracking-widest uppercase">Painel Administrativo</div>
-    </div>
-    <input class="login-input" type="email" id="login-email" placeholder="admin@v1rj.com.br" />
-    <input class="login-input" type="password" id="login-senha" placeholder="Senha" />
-    <p id="login-err" class="text-coral text-sm font-heading mb-3 hidden">E-mail ou senha inválidos.</p>
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <p class="text-center text-foam/30 text-xs mt-4 font-body">
-      Acesso restrito aos organizadores do V1 RJ 2026
-    </p>
-  </div>
-</div>
-
-<!-- ══ SIDEBAR ═══════════════════════════════════════════════ -->
-<aside class="sidebar">
-  <div class="p-6 border-b border-wave/10">
-    <div class="font-display text-2xl text-sand">V1 RJ</div>
-    <div class="font-heading text-xs text-wave/60 tracking-widest uppercase mt-0.5">Admin 2026</div>
-  </div>
-
-  <nav class="flex-1 py-4">
-    <div class="nav-item" onclick="showSection('config')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-1.41 3.41h-.2a2 2 0 0 1-1.86-1.26 1.65 1.65 0 0 0-1.54-1H12a1.65 1.65 0 0 0-1.54 1A2 2 0 0 1 8.6 20.29h-.2a2 2 0 0 1-1.41-3.41l.06-.06A1.65 1.65 0 0 0 7.4 15a1.65 1.65 0 0 0-1-1.54A2 2 0 0 1 5.71 11.6v-.2a2 2 0 0 1 1.26-1.86 1.65 1.65 0 0 0 1-1.54A1.65 1.65 0 0 0 7.4 6a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 0 1 8.42.71h.2A2 2 0 0 1 10.48 2a1.65 1.65 0 0 0 1.54 1H12A1.65 1.65 0 0 0 13.54 2 2 2 0 0 1 15.4.71h.2a2 2 0 0 1 1.41 3.41l-.06.06A1.65 1.65 0 0 0 16.6 6c0 .63.37 1.2 1 1.54A2 2 0 0 1 18.29 11.4v.2a2 2 0 0 1-1.26 1.86 1.65 1.65 0 0 0-1 1.54z"></path>
-    </svg>
-  Configurações
-    </div>
-    <div class="nav-item active" onclick="showSection('dashboard')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </div>
-    <div class="nav-item" onclick="showSection('atletas')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-      Atletas
-    </div>
-    <div class="nav-item" onclick="showSection('checkin')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-      Check-in
-    </div>
-    <div class="nav-item" onclick="showSection('largada')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Lista de Largada
-    </div>
-    <div class="nav-item" onclick="showSection('aluguel')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17 Q8 10 12 12 Q16 14 21 7"/></svg>
-      Aluguel Canoas
-    </div>
-  </nav>
-
-  <div class="p-4 border-t border-wave/10">
-    <button onclick="fazerLogout()"
-      class="w-full nav-item justify-center text-coral/70 hover:text-coral">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Sair
-    </button>
-  </div>
-</aside>
-
-<!-- ══ MAIN ══════════════════════════════════════════════════ -->
-<main class="main">
-
-  <!-- ── DASHBOARD ─────────────────────────────────────────── -->
-  <section id="sec-dashboard" class="section active">
-    <div class="mb-8">
-      <h1 class="font-display text-4xl text-sand">DASHBOARD</h1>
-      <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">V1 RJ 25K · 2026</p>
-    </div>
-
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div class="stat-card">
-        <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Total Inscritos</p>
-        <div class="value text-sand" id="stat-total">—</div>
-        <p class="font-heading text-xs text-foam/30 mt-1">todos os status</p>
-      </div>
-      <div class="stat-card">
-        <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Pagos</p>
-        <div class="value text-green-400" id="stat-pagos">—</div>
-        <p class="font-heading text-xs text-foam/30 mt-1">confirmados</p>
-      </div>
-      <div class="stat-card">
-        <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Arrecadado</p>
-        <div class="value text-coral" style="font-size:1.8rem;" id="stat-arrecadado">—</div>
-        <p class="font-heading text-xs text-foam/30 mt-1">R$ total</p>
-      </div>
-      <div class="stat-card">
-        <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Check-ins</p>
-        <div class="value text-wave" id="stat-checkin">—</div>
-        <p class="font-heading text-xs text-foam/30 mt-1">no dia</p>
-      </div>
-    </div>
-
-    <!-- Gráfico simplificado por categoria -->
-    <div class="stat-card">
-      <h3 class="font-heading font-700 text-sand text-lg tracking-wide mb-4">VAGAS POR CATEGORIA</h3>
-      <div id="chart-categorias" class="space-y-4">
-        <div class="text-foam/30 font-heading tracking-widest text-sm">Carregando...</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── ATLETAS ───────────────────────────────────────────── -->
-  <section id="sec-atletas" class="section">
-    <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
-      <div>
-        <h1 class="font-display text-4xl text-sand">ATLETAS</h1>
-        <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Lista completa de inscritos</p>
-      </div>
-      <button class="btn-export" onclick="exportarCSV()">⬇ Exportar CSV</button>
-    </div>
-
-    <!-- Filtros -->
-    <div class="flex flex-wrap gap-3 mb-6">
-      <input class="filter-input" type="text" id="filtro-nome" placeholder="🔍  Buscar nome ou CPF..." oninput="filtrarAtletas()" />
-      <select class="filter-select" id="filtro-categoria" onchange="filtrarAtletas()">
-        <option value="">Todas categorias</option>
-        <option value="Open">Open</option>
-        <option value="Master 40+">Master 40+</option>
-        <option value="Master 50+">Master 50+</option>
-        <option value="Master 60+">Master 60+</option>
-        <option value="Amador">Amador</option>
-        <option value="Junior">Junior</option>
-      </select>
-      <select class="filter-select" id="filtro-genero" onchange="filtrarAtletas()">
-        <option value="">Ambos gêneros</option>
-        <option value="M">Masculino</option>
-        <option value="F">Feminino</option>
-      </select>
-      <select class="filter-select" id="filtro-status" onchange="filtrarAtletas()">
-        <option value="">Todos status</option>
-        <option value="pago">Pago</option>
-        <option value="pendente">Pendente</option>
-        <option value="cancelado">Cancelado</option>
-      </select>
-    </div>
-
-    <!-- Tabela -->
-    <div class="overflow-x-auto rounded-xl" style="background:rgba(255,255,255,.02);border:1px solid rgba(0,180,216,.1);">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Nº Peito</th>
-            <th>Nome</th>
-            <th>Categoria</th>
-            <th>Gênero</th>
-            <th>Clube</th>
-            <th>Estado</th>
-            <th>Camiseta</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-atletas">
-          <tr><td colspan="9" class="text-center text-foam/30 py-8 font-heading tracking-widest">Carregando dados...</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p id="contagem-atletas" class="font-heading text-xs text-foam/30 tracking-widest uppercase mt-3"></p>
-  </section>
-
-  <!-- ── CHECK-IN ──────────────────────────────────────────── -->
-  <section id="sec-checkin" class="section">
-    <div class="mb-8">
-      <h1 class="font-display text-4xl text-sand">CHECK-IN</h1>
-      <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Marcar presença no dia do evento</p>
-    </div>
-
-    <div class="flex gap-3 mb-6">
-      <input class="filter-input flex-1" type="text" id="checkin-busca"
-        placeholder="🔍  Buscar por nome, CPF ou nº de peito..."
-        oninput="filtrarCheckin()" />
-      <select class="filter-select" id="checkin-filtro-status" onchange="filtrarCheckin()">
-        <option value="">Todos</option>
-        <option value="true">✅ Presentes</option>
-        <option value="false">⏳ Pendentes</option>
-      </select>
-    </div>
-
-    <div class="grid grid-cols-1 gap-3" id="checkin-lista">
-      <div class="text-foam/30 font-heading tracking-widest text-sm text-center py-8">Carregando...</div>
-    </div>
-  </section>
-
-  <!-- ── LISTA DE LARGADA ──────────────────────────────────── -->
-  <section id="sec-largada" class="section">
-    <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
-      <div>
-        <h1 class="font-display text-4xl text-sand">LISTA DE LARGADA</h1>
-        <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Apenas atletas com pagamento confirmado</p>
-      </div>
-      <div class="flex gap-3">
-        <button class="btn-export" onclick="exportarLargada('csv')">⬇ CSV</button>
-        <button class="btn-export" style="background:linear-gradient(135deg,#1565A0,#0B3D6B);" onclick="exportarLargada('print')">🖨 Imprimir</button>
-      </div>
-    </div>
-
-    <div class="overflow-x-auto rounded-xl" style="background:rgba(255,255,255,.02);border:1px solid rgba(0,180,216,.1);">
-      <table class="data-table" id="tabela-largada-el">
-        <thead>
-          <tr>
-            <th style="width:80px">Nº Peito</th>
-            <th>Nome Completo</th>
-            <th>Categoria</th>
-            <th>Gênero</th>
-            <th>Clube</th>
-            <th>Estado</th>
-            <th>Check-in</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-largada">
-          <tr><td colspan="7" class="text-center text-foam/30 py-8 font-heading tracking-widest">Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ── ALUGUEL CANOAS ────────────────────────────────────── -->
-  <section id="sec-aluguel" class="section">
-    <div class="mb-8">
-      <h1 class="font-display text-4xl text-sand">ALUGUEL DE CANOAS</h1>
-      <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Interesse registrado pelos atletas</p>
-    </div>
-    <div id="aluguel-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div class="text-foam/30 font-heading tracking-widest text-sm text-center col-span-full py-8">Carregando...</div>
-    </div>
-  </section>
-  <section id="sec-config" class="section">
-  <div class="mb-8">
-    <h1 class="font-display text-4xl text-sand">CONFIGURAÇÕES</h1>
-    <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Dados do evento (linha única)</p>
-  </div>
-
-  <div class="stat-card" style="max-width:720px;">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-      <div class="md:col-span-2">
-        <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Nome do evento</label>
-        <input id="cfg-nome" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="V1 RJ 25K 2026">
+  <!-- ══ LOGIN ════════════════════════════════════════════════ -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="text-center mb-8">
+        <div class="font-display text-4xl text-sand mb-1">V1 RJ 25K</div>
+        <div class="font-heading text-wave text-sm tracking-widest uppercase">Painel Administrativo</div>
       </div>
 
-      <div>
-        <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Data da prova</label>
-        <input id="cfg-data" type="date" class="login-input" style="margin-top:6px;margin-bottom:0;">
-      </div>
+      <input class="login-input" type="email" id="login-email" placeholder="admin@v1rj.com.br" />
+      <input class="login-input" type="password" id="login-senha" placeholder="Senha" />
+      <p id="login-err" class="text-coral text-sm font-heading mb-3 hidden">E-mail ou senha inválidos.</p>
+      <button class="login-btn" onclick="fazerLogin()">Entrar</button>
 
-      <div>
-        <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Limite global de vagas</label>
-        <input id="cfg-limite" type="number" min="1" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="200">
-      </div>
-
-      <div>
-        <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Preço global (R$)</label>
-        <input id="cfg-preco" type="number" min="0" step="0.01" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="180.00">
-      </div>
-
-      <div class="flex items-center gap-3" style="margin-top:6px;">
-        <input id="cfg-abertas" type="checkbox" style="width:16px;height:16px;accent-color:#00B4D8;">
-        <label for="cfg-abertas" class="font-heading text-foam/70 tracking-widest uppercase text-xs">Inscrições abertas</label>
-      </div>
-
-      <div class="md:col-span-2" style="margin-top:10px;">
-        <button class="btn-export" onclick="salvarConfiguracoes()">💾 Salvar</button>
-      </div>
-
-      <p class="font-heading text-foam/30 tracking-widest uppercase text-xs md:col-span-2" id="cfg-hint" style="margin-top:6px;">
-        Carregando configurações...
+      <p class="text-center text-foam/30 text-xs mt-4 font-body">
+        Acesso restrito aos organizadores do V1 RJ 2026
       </p>
+      <p class="text-center text-foam/20 text-xs mt-2 font-body" id="env-hint"></p>
     </div>
   </div>
-</section>
 
-</main>
+  <!-- ══ SIDEBAR ═══════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="p-6 border-b border-wave/10">
+      <div class="font-display text-2xl text-sand">V1 RJ</div>
+      <div class="font-heading text-xs text-wave/60 tracking-widest uppercase mt-0.5">Admin 2026</div>
+    </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     JAVASCRIPT ADMIN
-═══════════════════════════════════════════════════════════ -->
-<script>
-let cfgEvento = null;  
-// ── CONFIG ─────────────────────────────────────────────────
-const SUPABASE_URL  = 'https://SEU-PROJETO.supabase.co';
-const SUPABASE_ANON = 'SUA_ANON_KEY_AQUI';
-
-let sb = null;
-try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e) {}
-
-// ── ESTADO ─────────────────────────────────────────────────
-let todosAtletas  = [];
-let todosCheckin  = [];
-let listaLargada  = [];
-
-// ── LOGIN / AUTH ───────────────────────────────────────────
-async function fazerLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const senha = document.getElementById('login-senha').value;
-  const err   = document.getElementById('login-err');
-
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
-    // DEMO: senha demo
-    if (senha === 'admin2026') {
-      document.getElementById('login-screen').style.display = 'none';
-      initAdmin();
-    } else {
-      err.classList.remove('hidden');
-    }
-    return;
-  }
-
-  const { error } = await sb.auth.signInWithPassword({ email, password: senha });
-  if (error) { err.classList.remove('hidden'); return; }
-  err.classList.add('hidden');
-  document.getElementById('login-screen').style.display = 'none';
-  initAdmin();
-}
-
-async function fazerLogout() {
-  if (sb && !SUPABASE_URL.includes('SEU-PROJETO')) await sb.auth.signOut();
-  location.reload();
-}
-
-document.getElementById('login-senha').addEventListener('keydown', e => {
-  if (e.key === 'Enter') fazerLogin();
-});
-
-// Auto-login se já autenticado
-(async () => {
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) return;
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    document.getElementById('login-screen').style.display = 'none';
-    initAdmin();
-  }
-})();
-
-// ── INICIALIZAR PAINEL ─────────────────────────────────────
-async function initAdmin() {
-  await Promise.all([
-    carregarDashboard(),
-    carregarAtletas(),
-    carregarLargada(),
-    carregarConfigEvento(),
-  ]);
-}
-  async function carregarConfigEvento() {
-  const hint = document.getElementById('cfg-hint');
-
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
-    // Demo
-    cfgEvento = {
-      id: 'demo',
-      nome_evento: 'V1 RJ 25K 2026',
-      data_prova: '2026-10-17',
-      limite_vagas_global: 200,
-      inscricoes_abertas: true,
-      preco_inscricao: 180.00,
-    };
-    preencherFormConfig(cfgEvento);
-    hint.textContent = 'Modo demo: ajustes não são gravados no Supabase.';
-    return;
-  }
-
-  const { data, error } = await sb
-    .from('configuracoes_evento')
-    .select('*')
-    .order('updated_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error || !data) {
-    hint.textContent = 'Não foi possível carregar configurações.';
-    console.error(error);
-    return;
-  }
-
-  cfgEvento = data;
-  preencherFormConfig(cfgEvento);
-  hint.textContent = 'Configurações carregadas.';
-}
-
-function preencherFormConfig(cfg) {
-  document.getElementById('cfg-nome').value   = cfg.nome_evento || '';
-  document.getElementById('cfg-data').value   = cfg.data_prova || '';
-  document.getElementById('cfg-limite').value = cfg.limite_vagas_global ?? 200;
-  document.getElementById('cfg-abertas').checked = !!cfg.inscricoes_abertas;
-
-  // preço pode ser null se coluna acabou de ser criada
-  const p = (cfg.preco_inscricao ?? 180.00);
-  document.getElementById('cfg-preco').value = Number(p).toFixed(2);
-}
-
-async function salvarConfiguracoes() {
-  if (!cfgEvento) { showToast('❌ Config não carregada'); return; }
-
-  const payload = {
-    nome_evento: document.getElementById('cfg-nome').value.trim() || 'V1 RJ 25K 2026',
-    data_prova: document.getElementById('cfg-data').value || '2026-10-17',
-    limite_vagas_global: Number(document.getElementById('cfg-limite').value || 200),
-    inscricoes_abertas: document.getElementById('cfg-abertas').checked,
-    preco_inscricao: Number(document.getElementById('cfg-preco').value || 180.00),
-    updated_at: new Date().toISOString(),
-  };
-
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
-    cfgEvento = { ...cfgEvento, ...payload };
-    preencherFormConfig(cfgEvento);
-    showToast('💾 Salvo (demo)');
-    return;
-  }
-
-  const { error } = await sb
-    .from('configuracoes_evento')
-    .update(payload)
-    .eq('id', cfgEvento.id);
-
-  if (error) {
-    console.error(error);
-    showToast('❌ Erro ao salvar');
-    return;
-  }
-
-  showToast('✅ Configurações salvas');
-  await carregarConfigEvento();
-}
-
-// ── NAVEGAÇÃO ──────────────────────────────────────────────
-function showSection(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(`sec-${name}`).classList.add('active');
-  event.currentTarget.classList.add('active');
-
-  if (name === 'checkin')  renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
-  if (name === 'aluguel')  carregarAluguel();
-}
-
-// ── DADOS MOCK ─────────────────────────────────────────────
-function getMockAtletas() {
-  const nomes = [
-    ['João Silva', 'M', 'Open', 'Clube Vela RJ', 'RJ'],
-    ['Maria Santos', 'F', 'Open', 'Hawaii Team', 'SP'],
-    ['Carlos Menezes', 'M', 'Master 40+', 'Outrigger Brasil', 'RJ'],
-    ['Ana Ferreira', 'F', 'Master 40+', 'Clube Náutico', 'RJ'],
-    ['Roberto Lima', 'M', 'Master 50+', 'Independente', 'MG'],
-    ['Fernanda Costa', 'F', 'Open', 'V1 Team SP', 'SP'],
-    ['Paulo Rocha', 'M', 'Amador', null, 'ES'],
-    ['Juliana Neves', 'F', 'Master 50+', 'Atlética Naval', 'RJ'],
-    ['Marcos Alves', 'M', 'Open', 'Team Coral', 'RJ'],
-    ['Patrícia Gomes', 'F', 'Amador', 'Surf Club', 'SC'],
-  ];
-
-  return nomes.map((n, i) => ({
-    id: `mock-${i}`,
-    numero_peito: i < 8 ? i + 1 : null,
-    nome_completo: n[0],
-    cpf: `${String(i+1).padStart(3,'0')}.${String(i+2).padStart(3,'0')}.${String(i+3).padStart(3,'0')}-0${i}`,
-    genero: n[1],
-    categoria: { nome: n[2] },
-    clube: n[3],
-    estado: n[4],
-    tamanho_camiseta: ['P','M','G','GG'][i%4],
-    status_pagamento: i < 8 ? 'pago' : 'pendente',
-    valor_pago: i < 8 ? 180 : null,
-    checkin: i < 3,
-    checkin_at: i < 3 ? new Date().toISOString() : null,
-    aluguel_canoa: i % 3 === 0,
-    email: `atleta${i}@email.com`,
-  }));
-}
-
-// ── DASHBOARD ──────────────────────────────────────────────
-async function carregarDashboard() {
-  let stats, cats;
-
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
-    const mock = getMockAtletas();
-    stats = {
-      total_inscritos: mock.length,
-      total_pagos: mock.filter(a => a.status_pagamento === 'pago').length,
-      total_arrecadado: mock.filter(a => a.status_pagamento === 'pago').reduce((a,b) => a + (b.valor_pago||0), 0),
-      total_checkin: mock.filter(a => a.checkin).length,
-    };
-    cats = [
-      { nome:'Open',       genero:'M', inscritos_pagos:42, limite_vagas:80 },
-      { nome:'Open',       genero:'F', inscritos_pagos:28, limite_vagas:60 },
-      { nome:'Master 40+', genero:'M', inscritos_pagos:35, limite_vagas:60 },
-      { nome:'Master 40+', genero:'F', inscritos_pagos:18, limite_vagas:40 },
-      { nome:'Master 50+', genero:'M', inscritos_pagos:22, limite_vagas:40 },
-      { nome:'Master 50+', genero:'F', inscritos_pagos:10, limite_vagas:30 },
-    ];
-  } else {
-    const [r1, r2] = await Promise.all([
-      sb.from('vw_dashboard').select('*').single(),
-      sb.from('vw_vagas_categoria').select('*'),
-    ]);
-    stats = r1.data;
-    cats  = r2.data;
-  }
-
-  document.getElementById('stat-total').textContent      = stats.total_inscritos;
-  document.getElementById('stat-pagos').textContent      = stats.total_pagos;
-  document.getElementById('stat-arrecadado').textContent = `R$ ${Number(stats.total_arrecadado).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
-  document.getElementById('stat-checkin').textContent    = stats.total_checkin;
-
-  const chart = document.getElementById('chart-categorias');
-  chart.innerHTML = cats.map(c => {
-    const pct = Math.min(100, Math.round((c.inscritos_pagos||0) / c.limite_vagas * 100));
-    const genLabel = c.genero === 'M' ? '♂' : '♀';
-    return `
-      <div>
-        <div class="flex justify-between text-sm mb-1">
-          <span class="font-heading font-700 text-foam/80">${genLabel} ${c.nome}</span>
-          <span class="font-heading text-wave/60">${c.inscritos_pagos||0} / ${c.limite_vagas}</span>
-        </div>
-        <div style="background:rgba(255,255,255,.07);border-radius:999px;height:8px;">
-          <div style="background:linear-gradient(90deg,#00B4D8,#FF6B35);border-radius:999px;height:8px;width:${pct}%;transition:width .8s ease;"></div>
-        </div>
+    <nav class="flex-1 py-4">
+      <div class="nav-item active" onclick="showSection('dashboard')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+        </svg>
+        Dashboard
       </div>
-    `;
-  }).join('');
-}
 
-// ── ATLETAS ────────────────────────────────────────────────
-async function carregarAtletas() {
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
-    todosAtletas = getMockAtletas();
-    renderAtletas(todosAtletas);
-    return;
-  }
-
-  const { data, error } = await sb
-    .from('inscritos')
-    .select('*, categoria:categorias(nome)')
-    .order('created_at', { ascending: false });
-
-  if (error) { console.error(error); return; }
-  todosAtletas = data || [];
-  renderAtletas(todosAtletas);
-}
-
-function renderAtletas(lista) {
-  const tbody = document.getElementById('tabela-atletas');
-  const count = document.getElementById('contagem-atletas');
-  count.textContent = `${lista.length} atleta${lista.length !== 1 ? 's' : ''}`;
-
-  if (!lista.length) {
-    tbody.innerHTML = `<tr><td colspan="9" class="text-center text-foam/30 py-8 font-heading tracking-widest">Nenhum resultado encontrado.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = lista.map(a => `
-    <tr>
-      <td class="font-display text-xl text-sand">${a.numero_peito ?? '—'}</td>
-      <td class="font-body font-500">${a.nome_completo}</td>
-      <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:#00B4D8;">${a.categoria?.nome || '—'}</span></td>
-      <td class="font-heading text-sm">${a.genero === 'M' ? '♂ Masc' : '♀ Fem'}</td>
-      <td class="text-foam/50 text-sm">${a.clube || 'Independente'}</td>
-      <td class="font-heading text-sm text-foam/50">${a.estado || '—'}</td>
-      <td class="font-heading font-700 text-sm">${a.tamanho_camiseta}</td>
-      <td><span class="badge badge-${a.status_pagamento}">${a.status_pagamento}</span></td>
-      <td>
-        <button onclick="toggleCheckin('${a.id}', ${!a.checkin})"
-          class="btn-checkin ${a.checkin ? 'done' : 'todo'}">
-          ${a.checkin ? '✅ Ok' : 'Check-in'}
-        </button>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function filtrarAtletas() {
-  const nome   = document.getElementById('filtro-nome').value.toLowerCase();
-  const cat    = document.getElementById('filtro-categoria').value;
-  const gen    = document.getElementById('filtro-genero').value;
-  const status = document.getElementById('filtro-status').value;
-
-  const filtrados = todosAtletas.filter(a => {
-    const matchNome   = !nome   || a.nome_completo.toLowerCase().includes(nome) || a.cpf?.includes(nome);
-    const matchCat    = !cat    || a.categoria?.nome === cat;
-    const matchGen    = !gen    || a.genero === gen;
-    const matchStatus = !status || a.status_pagamento === status;
-    return matchNome && matchCat && matchGen && matchStatus;
-  });
-
-  renderAtletas(filtrados);
-}
-
-// ── CHECK-IN ───────────────────────────────────────────────
-function renderCheckin(lista) {
-  todosCheckin = lista;
-  filtrarCheckin();
-}
-
-function filtrarCheckin() {
-  const busca  = document.getElementById('checkin-busca').value.toLowerCase();
-  const status = document.getElementById('checkin-filtro-status').value;
-
-  const pagos = todosAtletas.filter(a => a.status_pagamento === 'pago');
-  const filtrados = pagos.filter(a => {
-    const matchBusca  = !busca || a.nome_completo.toLowerCase().includes(busca)
-                                || String(a.numero_peito).includes(busca)
-                                || (a.cpf||'').includes(busca);
-    const matchStatus = !status || String(a.checkin) === status;
-    return matchBusca && matchStatus;
-  });
-
-  const el = document.getElementById('checkin-lista');
-  if (!filtrados.length) {
-    el.innerHTML = `<div class="text-foam/30 font-heading tracking-widest text-sm text-center py-8">Nenhum atleta encontrado.</div>`;
-    return;
-  }
-
-  el.innerHTML = filtrados.map(a => `
-    <div id="ci-${a.id}" class="flex items-center justify-between p-4 rounded-xl transition-all"
-      style="background:${a.checkin ? 'rgba(34,197,94,.06)' : 'rgba(255,255,255,.03)'};border:1px solid ${a.checkin ? 'rgba(34,197,94,.2)' : 'rgba(0,180,216,.1)'};">
-      <div class="flex items-center gap-4">
-        <div class="font-display text-3xl text-sand w-16 text-center">${a.numero_peito ?? '—'}</div>
-        <div>
-          <p class="font-heading font-700 text-foam text-lg leading-tight">${a.nome_completo}</p>
-          <p class="font-body text-xs text-foam/40">${a.categoria?.nome || '—'} · ${a.genero === 'M' ? 'Masculino' : 'Feminino'} · ${a.clube || 'Independente'}</p>
-          ${a.checkin ? `<p class="font-body text-xs text-green-400/60 mt-0.5">✅ Check-in realizado</p>` : ''}
-        </div>
+      <div class="nav-item" onclick="showSection('atletas')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        Atletas
       </div>
-      <button onclick="toggleCheckin('${a.id}', ${!a.checkin})"
-        class="btn-checkin ${a.checkin ? 'done' : 'todo'} text-base px-6 py-3">
-        ${a.checkin ? '✅ Presente' : 'Marcar Presença'}
+
+      <div class="nav-item" onclick="showSection('checkin')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+        Check-in
+      </div>
+
+      <div class="nav-item" onclick="showSection('largada')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        Lista de Largada
+      </div>
+
+      <div class="nav-item" onclick="showSection('resultados')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 3v18h18"/><path d="M7 15l3-3 3 3 6-6"/><path d="M19 9v6h-6"/>
+        </svg>
+        Resultados
+      </div>
+
+      <div class="nav-item" onclick="showSection('aluguel')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 17 Q8 10 12 12 Q16 14 21 7"/>
+        </svg>
+        Aluguel Canoas
+      </div>
+
+      <div class="nav-item" onclick="showSection('config')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-1.41 3.41h-.2a2 2 0 0 1-1.86-1.26 1.65 1.65 0 0 0-1.54-1H12a1.65 1.65 0 0 0-1.54 1A2 2 0 0 1 8.6 20.29h-.2a2 2 0 0 1-1.41-3.41l.06-.06A1.65 1.65 0 0 0 7.4 15a1.65 1.65 0 0 0-1-1.54A2 2 0 0 1 5.71 11.6v-.2a2 2 0 0 1 1.26-1.86 1.65 1.65 0 0 0 1-1.54A1.65 1.65 0 0 0 7.4 6a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 0 1 8.42.71h.2A2 2 0 0 1 10.48 2a1.65 1.65 0 0 0 1.54 1H12A1.65 1.65 0 0 0 13.54 2 2 2 0 0 1 15.4.71h.2a2 2 0 0 1 1.41 3.41l-.06.06A1.65 1.65 0 0 0 16.6 6c0 .63.37 1.2 1 1.54A2 2 0 0 1 18.29 11.4v.2a2 2 0 0 1-1.26 1.86 1.65 1.65 0 0 0-1 1.54z"></path>
+        </svg>
+        Configurações
+      </div>
+    </nav>
+
+    <div class="p-4 border-t border-wave/10">
+      <button onclick="fazerLogout()" class="w-full nav-item justify-center text-coral/70 hover:text-coral" style="border-left:0;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Sair
       </button>
     </div>
-  `).join('');
-}
+  </aside>
 
-async function toggleCheckin(id, novoStatus) {
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
-    // Demo
-    const atleta = todosAtletas.find(a => a.id === id);
-    if (atleta) {
-      atleta.checkin = novoStatus;
-      atleta.checkin_at = novoStatus ? new Date().toISOString() : null;
-    }
-    filtrarAtletas();
-    renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
-    showToast(novoStatus ? '✅ Check-in realizado!' : '↩ Check-in desfeito');
-    return;
-  }
+  <!-- ══ MAIN ══════════════════════════════════════════════════ -->
+  <main class="main">
 
-  const { error } = await sb.from('inscritos')
-    .update({ checkin: novoStatus, checkin_at: novoStatus ? new Date().toISOString() : null })
-    .eq('id', id);
+    <!-- ── DASHBOARD ─────────────────────────────────────────── -->
+    <section id="sec-dashboard" class="section active">
+      <div class="mb-8">
+        <h1 class="font-display text-4xl text-sand">DASHBOARD</h1>
+        <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">V1 RJ 25K · 2026</p>
+      </div>
 
-  if (error) { showToast('❌ Erro ao atualizar check-in'); return; }
-
-  const atleta = todosAtletas.find(a => a.id === id);
-  if (atleta) { atleta.checkin = novoStatus; atleta.checkin_at = novoStatus ? new Date().toISOString() : null; }
-
-  filtrarAtletas();
-  renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
-  await carregarDashboard();
-  showToast(novoStatus ? '✅ Check-in realizado!' : '↩ Check-in desfeito');
-}
-
-// ── LISTA DE LARGADA ───────────────────────────────────────
-async function carregarLargada() {
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
-    listaLargada = getMockAtletas()
-      .filter(a => a.status_pagamento === 'pago')
-      .sort((a,b) => (a.numero_peito||999) - (b.numero_peito||999));
-  } else {
-    const { data } = await sb.from('vw_lista_largada').select('*');
-    listaLargada = data || [];
-  }
-
-  const tbody = document.getElementById('tabela-largada');
-  tbody.innerHTML = listaLargada.map(a => `
-    <tr>
-      <td class="font-display text-2xl text-sand">${a.numero_peito}</td>
-      <td class="font-body font-500">${a.nome_completo}</td>
-      <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#00B4D8;">${a.categoria?.nome || a.categoria || '—'}</span></td>
-      <td>${a.genero === 'M' ? '♂' : '♀'}</td>
-      <td class="text-foam/50 text-sm">${a.clube || 'Independente'}</td>
-      <td class="font-heading text-foam/50">${a.estado || '—'}</td>
-      <td>${a.checkin ? '<span class="badge badge-pago">✅ Sim</span>' : '<span class="badge badge-pendente">Pendente</span>'}</td>
-    </tr>
-  `).join('');
-}
-
-// ── ALUGUEL ────────────────────────────────────────────────
-async function carregarAluguel() {
-  const el = document.getElementById('aluguel-lista');
-
-  if (!sb || SUPABASE_URL.includes('SEU-PROJETO')) {
-    const interessados = getMockAtletas().filter(a => a.aluguel_canoa);
-    el.innerHTML = interessados.length
-      ? interessados.map(a => `
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="stat-card">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg" style="background:rgba(255,107,53,.15)">🛶</div>
-            <div>
-              <p class="font-heading font-700 text-foam leading-tight">${a.nome_completo}</p>
-              <p class="font-body text-xs text-foam/40">${a.categoria?.nome || '—'} · ${a.estado}</p>
+          <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Total Inscritos</p>
+          <div class="value text-sand" id="stat-total">—</div>
+          <p class="font-heading text-xs text-foam/30 mt-1">todos os status</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Pagos</p>
+          <div class="value text-green-400" id="stat-pagos">—</div>
+          <p class="font-heading text-xs text-foam/30 mt-1">confirmados</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Arrecadado</p>
+          <div class="value text-coral" style="font-size:1.8rem;" id="stat-arrecadado">—</div>
+          <p class="font-heading text-xs text-foam/30 mt-1">R$ total</p>
+        </div>
+
+        <div class="stat-card">
+          <p class="font-heading text-xs text-wave/60 tracking-widest uppercase mb-2">Check-ins</p>
+          <div class="value text-wave" id="stat-checkin">—</div>
+          <p class="font-heading text-xs text-foam/30 mt-1">no dia</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <h3 class="font-heading font-700 text-sand text-lg tracking-wide mb-4">VAGAS POR CATEGORIA</h3>
+        <div id="chart-categorias" class="space-y-4">
+          <div class="text-foam/30 font-heading tracking-widest text-sm">Carregando...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ATLETAS ───────────────────────────────────────────── -->
+    <section id="sec-atletas" class="section">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+        <div>
+          <h1 class="font-display text-4xl text-sand">ATLETAS</h1>
+          <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Lista completa de inscritos</p>
+        </div>
+        <button class="btn-export" onclick="exportarCSV()">Exportar CSV</button>
+      </div>
+
+      <div class="flex flex-wrap gap-3 mb-6">
+        <input class="filter-input" type="text" id="filtro-nome" placeholder="Buscar nome ou CPF..." oninput="filtrarAtletas()" />
+        <select class="filter-select" id="filtro-categoria" onchange="filtrarAtletas()">
+          <option value="">Todas categorias</option>
+          <option value="Open">Open</option>
+          <option value="Master 40+">Master 40+</option>
+          <option value="Master 50+">Master 50+</option>
+          <option value="Master 60+">Master 60+</option>
+          <option value="Amador">Amador</option>
+          <option value="Junior">Junior</option>
+        </select>
+        <select class="filter-select" id="filtro-genero" onchange="filtrarAtletas()">
+          <option value="">Ambos gêneros</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+        <select class="filter-select" id="filtro-status" onchange="filtrarAtletas()">
+          <option value="">Todos status</option>
+          <option value="pago">Pago</option>
+          <option value="pendente">Pendente</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl" style="background:rgba(255,255,255,.02);border:1px solid rgba(0,180,216,.1);">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nº Peito</th>
+              <th>Nome</th>
+              <th>Categoria</th>
+              <th>Gênero</th>
+              <th>Clube</th>
+              <th>Estado</th>
+              <th>Camiseta</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-atletas">
+            <tr><td colspan="9" class="text-center text-foam/30 py-8 font-heading tracking-widest">Carregando dados...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p id="contagem-atletas" class="font-heading text-xs text-foam/30 tracking-widest uppercase mt-3"></p>
+    </section>
+
+    <!-- ── CHECK-IN ──────────────────────────────────────────── -->
+    <section id="sec-checkin" class="section">
+      <div class="mb-8">
+        <h1 class="font-display text-4xl text-sand">CHECK-IN</h1>
+        <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Marcar presença no dia do evento</p>
+      </div>
+
+      <div class="flex flex-wrap gap-3 mb-6">
+        <input class="filter-input flex-1" type="text" id="checkin-busca"
+          placeholder="Buscar por nome, CPF ou nº de peito..."
+          oninput="filtrarCheckin()" />
+        <select class="filter-select" id="checkin-filtro-status" onchange="filtrarCheckin()">
+          <option value="">Todos</option>
+          <option value="true">Presentes</option>
+          <option value="false">Pendentes</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 gap-3" id="checkin-lista">
+        <div class="text-foam/30 font-heading tracking-widest text-sm text-center py-8">Carregando...</div>
+      </div>
+    </section>
+
+    <!-- ── LISTA DE LARGADA ──────────────────────────────────── -->
+    <section id="sec-largada" class="section">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+        <div>
+          <h1 class="font-display text-4xl text-sand">LISTA DE LARGADA</h1>
+          <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Apenas atletas com pagamento confirmado</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn-export" onclick="exportarLargada('csv')">CSV</button>
+          <button class="btn-soft" onclick="exportarLargada('print')">Imprimir</button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl" style="background:rgba(255,255,255,.02);border:1px solid rgba(0,180,216,.1);">
+        <table class="data-table" id="tabela-largada-el">
+          <thead>
+            <tr>
+              <th style="width:80px">Nº Peito</th>
+              <th>Nome Completo</th>
+              <th>Categoria</th>
+              <th>Gênero</th>
+              <th>Clube</th>
+              <th>Estado</th>
+              <th>Check-in</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-largada">
+            <tr><td colspan="7" class="text-center text-foam/30 py-8 font-heading tracking-widest">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── RESULTADOS ────────────────────────────────────────── -->
+    <section id="sec-resultados" class="section">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+        <div>
+          <h1 class="font-display text-4xl text-sand">RESULTADOS</h1>
+          <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Lançamento manual de largada/chegada e tempo oficial</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button class="btn-soft" onclick="aplicarLargadaGlobalPrompt()">Definir largada global</button>
+          <button class="btn-export" onclick="exportarResultadosCSV()">Exportar CSV</button>
+        </div>
+      </div>
+
+      <div class="stat-card mb-6">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="font-heading text-wave/60 tracking-widest uppercase text-xs">Filtros</div>
+          <select class="filter-select" id="res-filtro-categoria" onchange="filtrarResultados()">
+            <option value="">Todas categorias</option>
+            <option value="Open">Open</option>
+            <option value="Master 40+">Master 40+</option>
+            <option value="Master 50+">Master 50+</option>
+            <option value="Master 60+">Master 60+</option>
+            <option value="Amador">Amador</option>
+            <option value="Junior">Junior</option>
+          </select>
+          <select class="filter-select" id="res-filtro-genero" onchange="filtrarResultados()">
+            <option value="">M/F</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+          <input class="filter-input" id="res-busca" placeholder="Buscar nº peito / nome..." oninput="filtrarResultados()" />
+          <span class="font-heading text-xs text-foam/30 tracking-widest uppercase" id="res-hint"></span>
+        </div>
+        <p class="font-body text-xs text-foam/30 mt-4">
+          Formato de hora: <span class="text-foam/60">HH:MM:SS</span>.
+          Data base: <span class="text-foam/60" id="res-data-base">—</span>.
+        </p>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl" style="background:rgba(255,255,255,.02);border:1px solid rgba(0,180,216,.1);">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nº Peito</th>
+              <th>Nome</th>
+              <th>Categoria</th>
+              <th>Gênero</th>
+              <th>Largada</th>
+              <th>Chegada</th>
+              <th>Tempo oficial</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-resultados">
+            <tr><td colspan="8" class="text-center text-foam/30 py-8 font-heading tracking-widest">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── ALUGUEL ──────────────────────────────────────────── -->
+    <section id="sec-aluguel" class="section">
+      <div class="mb-8">
+        <h1 class="font-display text-4xl text-sand">ALUGUEL DE CANOAS</h1>
+        <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Interesse registrado pelos atletas</p>
+      </div>
+
+      <div id="aluguel-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="text-foam/30 font-heading tracking-widest text-sm text-center col-span-full py-8">Carregando...</div>
+      </div>
+    </section>
+
+    <!-- ── CONFIGURAÇÕES ─────────────────────────────────────── -->
+    <section id="sec-config" class="section">
+      <div class="mb-8">
+        <h1 class="font-display text-4xl text-sand">CONFIGURAÇÕES</h1>
+        <p class="font-heading text-wave/60 text-sm tracking-widest uppercase">Dados do evento (linha única)</p>
+      </div>
+
+      <div class="stat-card" style="max-width:720px;">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2">
+            <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Nome do evento</label>
+            <input id="cfg-nome" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="V1 RJ 25K 2026">
+          </div>
+
+          <div>
+            <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Data da prova</label>
+            <input id="cfg-data" type="date" class="login-input" style="margin-top:6px;margin-bottom:0;">
+          </div>
+
+          <div>
+            <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Limite global de vagas</label>
+            <input id="cfg-limite" type="number" min="1" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="200">
+          </div>
+
+          <div>
+            <label class="font-heading text-wave/60 text-xs tracking-widest uppercase">Preço global (R$)</label>
+            <input id="cfg-preco" type="number" min="0" step="0.01" class="login-input" style="margin-top:6px;margin-bottom:0;" placeholder="180.00">
+          </div>
+
+          <div class="flex items-center gap-3" style="margin-top:6px;">
+            <input id="cfg-abertas" type="checkbox" style="width:16px;height:16px;accent-color:#00B4D8;">
+            <label for="cfg-abertas" class="font-heading text-foam/70 tracking-widest uppercase text-xs">Inscrições abertas</label>
+          </div>
+
+          <div class="md:col-span-2" style="margin-top:10px;">
+            <button class="btn-export" onclick="salvarConfiguracoes()">Salvar</button>
+          </div>
+
+          <p class="font-heading text-foam/30 tracking-widest uppercase text-xs md:col-span-2" id="cfg-hint" style="margin-top:6px;">
+            Carregando configurações...
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════
+  JAVASCRIPT
+  ════════════════════════════════════════════════════════════ -->
+  <script>
+    // ─────────────────────────────────────────────────────────
+    // CONFIG
+    // ─────────────────────────────────────────────────────────
+    const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
+    const SUPABASE_ANON = 'SUA_ANON_KEY_AQUI';
+
+    let sb = null;
+    try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e) {}
+
+    const IS_DEMO = (!sb || SUPABASE_URL.includes('SEU-PROJETO') || SUPABASE_ANON.includes('SUA_ANON_KEY'));
+
+    document.getElementById('env-hint').textContent = IS_DEMO
+      ? 'Modo demo ativo (sem Supabase real).'
+      : 'Conectado ao Supabase.';
+
+    // ─────────────────────────────────────────────────────────
+    // ESTADO
+    // ─────────────────────────────────────────────────────────
+    let cfgEvento = null;
+    let todosAtletas = [];
+    let todosCheckin = [];
+    let listaLargada = [];
+    let resultados = [];
+    let resultadosFiltrados = [];
+
+    // ─────────────────────────────────────────────────────────
+    // LOGIN / AUTH
+    // ─────────────────────────────────────────────────────────
+    async function fazerLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const senha = document.getElementById('login-senha').value;
+      const err = document.getElementById('login-err');
+
+      if (IS_DEMO) {
+        if (senha === 'admin2026') {
+          document.getElementById('login-screen').style.display = 'none';
+          initAdmin();
+        } else {
+          err.classList.remove('hidden');
+        }
+        return;
+      }
+
+      const { error } = await sb.auth.signInWithPassword({ email, password: senha });
+      if (error) { err.classList.remove('hidden'); return; }
+
+      err.classList.add('hidden');
+      document.getElementById('login-screen').style.display = 'none';
+      initAdmin();
+    }
+
+    async function fazerLogout() {
+      if (!IS_DEMO) await sb.auth.signOut();
+      location.reload();
+    }
+
+    document.getElementById('login-senha').addEventListener('keydown', e => {
+      if (e.key === 'Enter') fazerLogin();
+    });
+
+    (async () => {
+      if (IS_DEMO) return;
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        document.getElementById('login-screen').style.display = 'none';
+        initAdmin();
+      }
+    })();
+
+    // ─────────────────────────────────────────────────────────
+    // INIT
+    // ─────────────────────────────────────────────────────────
+    async function initAdmin() {
+      await Promise.all([
+        carregarConfigEvento(),
+        carregarDashboard(),
+        carregarAtletas(),
+        carregarLargada(),
+      ]);
+
+      // resultados depende do cfgEvento.data_prova (pra mostrar data base)
+      await carregarResultados();
+
+      // dica visual
+      setResDataBaseHint();
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // NAVEGAÇÃO
+    // ─────────────────────────────────────────────────────────
+    function showSection(name) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(`sec-${name}`).classList.add('active');
+      event.currentTarget.classList.add('active');
+
+      if (name === 'checkin') renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
+      if (name === 'aluguel') carregarAluguel();
+      if (name === 'resultados') carregarResultados(); // recarrega para pegar tempo_oficial atualizado
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // MOCK
+    // ─────────────────────────────────────────────────────────
+    function getMockAtletas() {
+      const nomes = [
+        ['João Silva', 'M', 'Open', 'Clube Vela RJ', 'RJ'],
+        ['Maria Santos', 'F', 'Open', 'Hawaii Team', 'SP'],
+        ['Carlos Menezes', 'M', 'Master 40+', 'Outrigger Brasil', 'RJ'],
+        ['Ana Ferreira', 'F', 'Master 40+', 'Clube Náutico', 'RJ'],
+        ['Roberto Lima', 'M', 'Master 50+', 'Independente', 'MG'],
+        ['Fernanda Costa', 'F', 'Open', 'V1 Team SP', 'SP'],
+        ['Paulo Rocha', 'M', 'Amador', null, 'ES'],
+        ['Juliana Neves', 'F', 'Master 50+', 'Atlética Naval', 'RJ'],
+        ['Marcos Alves', 'M', 'Open', 'Team Coral', 'RJ'],
+        ['Patrícia Gomes', 'F', 'Amador', 'Surf Club', 'SC'],
+      ];
+      return nomes.map((n, i) => ({
+        id: `mock-${i}`,
+        numero_peito: i + 1,
+        nome_completo: n[0],
+        cpf: `${String(i+1).padStart(3,'0')}.${String(i+2).padStart(3,'0')}.${String(i+3).padStart(3,'0')}-0${i}`,
+        genero: n[1],
+        categoria: { nome: n[2] },
+        clube: n[3],
+        estado: n[4],
+        tamanho_camiseta: ['P','M','G','GG'][i%4],
+        status_pagamento: i < 8 ? 'pago' : 'pendente',
+        valor_pago: i < 8 ? 180 : null,
+        checkin_realizado: i < 3,
+        hora_checkin: i < 3 ? new Date().toISOString() : null,
+        aluguel_canoa: i % 3 === 0,
+        email: `atleta${i}@email.com`,
+      }));
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // CONFIG EVENTO
+    // ─────────────────────────────────────────────────────────
+    async function carregarConfigEvento() {
+      const hint = document.getElementById('cfg-hint');
+
+      if (IS_DEMO) {
+        cfgEvento = {
+          id: 'demo',
+          nome_evento: 'V1 RJ 25K 2026',
+          data_prova: '2026-09-21',
+          limite_vagas_global: 200,
+          inscricoes_abertas: true,
+          preco_inscricao: 180.00,
+          updated_at: new Date().toISOString(),
+        };
+        preencherFormConfig(cfgEvento);
+        hint.textContent = 'Modo demo: ajustes não são gravados no Supabase.';
+        return;
+      }
+
+      const { data, error } = await sb
+        .from('configuracoes_evento')
+        .select('*')
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error || !data) {
+        hint.textContent = 'Não foi possível carregar configurações.';
+        console.error(error);
+        return;
+      }
+
+      cfgEvento = data;
+      preencherFormConfig(cfgEvento);
+      hint.textContent = 'Configurações carregadas.';
+    }
+
+    function preencherFormConfig(cfg) {
+      document.getElementById('cfg-nome').value = cfg.nome_evento || '';
+      document.getElementById('cfg-data').value = cfg.data_prova || '';
+      document.getElementById('cfg-limite').value = cfg.limite_vagas_global ?? 200;
+      document.getElementById('cfg-abertas').checked = !!cfg.inscricoes_abertas;
+      const p = (cfg.preco_inscricao ?? 180.00);
+      document.getElementById('cfg-preco').value = Number(p).toFixed(2);
+    }
+
+    async function salvarConfiguracoes() {
+      if (!cfgEvento) { showToast('Config não carregada'); return; }
+
+      const payload = {
+        nome_evento: document.getElementById('cfg-nome').value.trim() || 'V1 RJ 25K 2026',
+        data_prova: document.getElementById('cfg-data').value || '2026-09-21',
+        limite_vagas_global: Number(document.getElementById('cfg-limite').value || 200),
+        inscricoes_abertas: document.getElementById('cfg-abertas').checked,
+        preco_inscricao: Number(document.getElementById('cfg-preco').value || 180.00),
+        updated_at: new Date().toISOString(),
+      };
+
+      if (IS_DEMO) {
+        cfgEvento = { ...cfgEvento, ...payload };
+        preencherFormConfig(cfgEvento);
+        showToast('Salvo (demo)');
+        setResDataBaseHint();
+        return;
+      }
+
+      const { error } = await sb
+        .from('configuracoes_evento')
+        .update(payload)
+        .eq('id', cfgEvento.id);
+
+      if (error) {
+        console.error(error);
+        showToast('Erro ao salvar');
+        return;
+      }
+
+      showToast('Configurações salvas');
+      await carregarConfigEvento();
+      setResDataBaseHint();
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // DASHBOARD (simplificado)
+    // ─────────────────────────────────────────────────────────
+    async function carregarDashboard() {
+      let stats, cats;
+
+      if (IS_DEMO) {
+        const mock = getMockAtletas();
+        stats = {
+          total_inscritos: mock.length,
+          total_pagos: mock.filter(a => a.status_pagamento === 'pago').length,
+          total_arrecadado: mock.filter(a => a.status_pagamento === 'pago').reduce((a,b) => a + (b.valor_pago||0), 0),
+          total_checkin: mock.filter(a => a.checkin_realizado).length,
+        };
+        cats = [
+          { nome:'Open', genero:'M', inscritos_pagos:42, limite_vagas:80 },
+          { nome:'Open', genero:'F', inscritos_pagos:28, limite_vagas:60 },
+          { nome:'Master 40+', genero:'M', inscritos_pagos:35, limite_vagas:60 },
+          { nome:'Master 40+', genero:'F', inscritos_pagos:18, limite_vagas:40 },
+          { nome:'Master 50+', genero:'M', inscritos_pagos:22, limite_vagas:40 },
+          { nome:'Master 50+', genero:'F', inscritos_pagos:10, limite_vagas:30 },
+        ];
+      } else {
+        // Sem views prontas, calcula via queries simples
+        const { data: inscritosAll, error: e1 } = await sb.from('inscritos').select('status_pagamento, checkin_realizado');
+        if (e1) { console.error(e1); return; }
+
+        const { data: cfgs } = await sb.from('configuracoes_evento').select('limite_vagas_global').order('updated_at', { ascending:false }).limit(1).maybeSingle();
+
+        const total = inscritosAll.length;
+        const pagos = inscritosAll.filter(x => x.status_pagamento === 'pago').length;
+        const checkins = inscritosAll.filter(x => x.checkin_realizado === true).length;
+
+        // arrecadado: usa cfgEvento.preco_inscricao como aproximação (v0)
+        const preco = Number(cfgEvento?.preco_inscricao ?? 180);
+        const arrecadado = pagos * preco;
+
+        stats = { total_inscritos: total, total_pagos: pagos, total_arrecadado: arrecadado, total_checkin: checkins };
+
+        // categorias: faz agregação no frontend
+        const { data: inscritosJoin, error: e2 } = await sb
+          .from('inscritos')
+          .select('status_pagamento, genero, categoria:categorias(nome)')
+          .eq('status_pagamento', 'pago');
+
+        if (e2) { console.error(e2); return; }
+
+        const limiteDefault = Number(cfgs?.limite_vagas_global ?? 200);
+        const map = new Map(); // key: genero|categoria
+
+        (inscritosJoin || []).forEach(r => {
+          const cat = r.categoria?.nome || '—';
+          const gen = r.genero || 'X';
+          const key = `${gen}|${cat}`;
+          map.set(key, (map.get(key) || 0) + 1);
+        });
+
+        cats = Array.from(map.entries()).map(([key, inscritos_pagos]) => {
+          const [genero, nome] = key.split('|');
+          // limite por categoria não existe na tabela, então exibimos um limite "estimado" (ou use global)
+          return { nome, genero, inscritos_pagos, limite_vagas: limiteDefault };
+        });
+      }
+
+      document.getElementById('stat-total').textContent = stats.total_inscritos;
+      document.getElementById('stat-pagos').textContent = stats.total_pagos;
+      document.getElementById('stat-arrecadado').textContent = `R$ ${Number(stats.total_arrecadado).toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+      document.getElementById('stat-checkin').textContent = stats.total_checkin;
+
+      const chart = document.getElementById('chart-categorias');
+      chart.innerHTML = (cats || []).length ? cats.map(c => {
+        const pct = Math.min(100, Math.round(((c.inscritos_pagos||0) / (c.limite_vagas || 1)) * 100));
+        const genLabel = c.genero === 'M' ? '♂' : (c.genero === 'F' ? '♀' : '•');
+        return `
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="font-heading font-700 text-foam/80">${genLabel} ${c.nome}</span>
+              <span class="font-heading text-wave/60">${c.inscritos_pagos||0} / ${c.limite_vagas}</span>
+            </div>
+            <div style="background:rgba(255,255,255,.07);border-radius:999px;height:8px;">
+              <div style="background:linear-gradient(90deg,#00B4D8,#FF6B35);border-radius:999px;height:8px;width:${pct}%;transition:width .8s ease;"></div>
             </div>
           </div>
-          <a href="mailto:${a.email}" class="text-wave text-sm font-heading hover:underline">${a.email}</a>
+        `;
+      }).join('') : `<div class="text-foam/30 font-heading tracking-widest text-sm">Sem dados.</div>`;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // ATLETAS
+    // ─────────────────────────────────────────────────────────
+    async function carregarAtletas() {
+      if (IS_DEMO) {
+        todosAtletas = getMockAtletas();
+        renderAtletas(todosAtletas);
+        return;
+      }
+
+      const { data, error } = await sb
+        .from('inscritos')
+        .select('id, numero_peito, nome_completo, cpf, genero, clube, email, status_pagamento, estado, tamanho_camiseta, checkin_realizado, hora_checkin, categoria:categorias(nome)')
+        .order('created_at', { ascending: false });
+
+      if (error) { console.error(error); return; }
+      todosAtletas = data || [];
+      renderAtletas(todosAtletas);
+    }
+
+    function renderAtletas(lista) {
+      const tbody = document.getElementById('tabela-atletas');
+      const count = document.getElementById('contagem-atletas');
+      count.textContent = `${lista.length} atleta${lista.length !== 1 ? 's' : ''}`;
+
+      if (!lista.length) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center text-foam/30 py-8 font-heading tracking-widest">Nenhum resultado encontrado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = lista.map(a => `
+        <tr>
+          <td class="font-display text-xl text-sand">${a.numero_peito ?? '—'}</td>
+          <td class="font-body font-500">${a.nome_completo}</td>
+          <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:#00B4D8;">${a.categoria?.nome || '—'}</span></td>
+          <td class="font-heading text-sm">${a.genero === 'M' ? '♂ Masc' : '♀ Fem'}</td>
+          <td class="text-foam/50 text-sm">${a.clube || 'Independente'}</td>
+          <td class="font-heading text-sm text-foam/50">${a.estado || '—'}</td>
+          <td class="font-heading font-700 text-sm">${a.tamanho_camiseta || '—'}</td>
+          <td><span class="badge badge-${a.status_pagamento}">${a.status_pagamento}</span></td>
+          <td>
+            <button onclick="toggleCheckin('${a.id}', ${!a.checkin_realizado})"
+              class="btn-checkin ${a.checkin_realizado ? 'done' : 'todo'}">
+              ${a.checkin_realizado ? 'Ok' : 'Check-in'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filtrarAtletas() {
+      const nome = document.getElementById('filtro-nome').value.toLowerCase();
+      const cat = document.getElementById('filtro-categoria').value;
+      const gen = document.getElementById('filtro-genero').value;
+      const status = document.getElementById('filtro-status').value;
+
+      const filtrados = todosAtletas.filter(a => {
+        const matchNome = !nome || (a.nome_completo || '').toLowerCase().includes(nome) || (a.cpf || '').includes(nome) || String(a.numero_peito || '').includes(nome);
+        const matchCat = !cat || a.categoria?.nome === cat;
+        const matchGen = !gen || a.genero === gen;
+        const matchStatus = !status || a.status_pagamento === status;
+        return matchNome && matchCat && matchGen && matchStatus;
+      });
+
+      renderAtletas(filtrados);
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // CHECK-IN
+    // ─────────────────────────────────────────────────────────
+    function renderCheckin(lista) {
+      todosCheckin = lista;
+      filtrarCheckin();
+    }
+
+    function filtrarCheckin() {
+      const busca = document.getElementById('checkin-busca').value.toLowerCase();
+      const status = document.getElementById('checkin-filtro-status').value;
+      const pagos = todosAtletas.filter(a => a.status_pagamento === 'pago');
+
+      const filtrados = pagos.filter(a => {
+        const matchBusca =
+          !busca ||
+          (a.nome_completo || '').toLowerCase().includes(busca) ||
+          String(a.numero_peito || '').includes(busca) ||
+          (a.cpf || '').includes(busca);
+
+        const matchStatus = !status || String(!!a.checkin_realizado) === status;
+        return matchBusca && matchStatus;
+      });
+
+      const el = document.getElementById('checkin-lista');
+      if (!filtrados.length) {
+        el.innerHTML = `<div class="text-foam/30 font-heading tracking-widest text-sm text-center py-8">Nenhum atleta encontrado.</div>`;
+        return;
+      }
+
+      el.innerHTML = filtrados.map(a => `
+        <div id="ci-${a.id}" class="flex items-center justify-between p-4 rounded-xl transition-all"
+          style="background:${a.checkin_realizado ? 'rgba(34,197,94,.06)' : 'rgba(255,255,255,.03)'};border:1px solid ${a.checkin_realizado ? 'rgba(34,197,94,.2)' : 'rgba(0,180,216,.1)'};">
+          <div class="flex items-center gap-4">
+            <div class="font-display text-3xl text-sand w-16 text-center">${a.numero_peito ?? '—'}</div>
+            <div>
+              <p class="font-heading font-700 text-foam text-lg leading-tight">${a.nome_completo}</p>
+              <p class="font-body text-xs text-foam/40">${a.categoria?.nome || '—'} · ${a.genero === 'M' ? 'Masculino' : 'Feminino'} · ${a.clube || 'Independente'}</p>
+              ${a.checkin_realizado ? `<p class="font-body text-xs text-green-400/60 mt-0.5">Check-in realizado</p>` : ``}
+            </div>
+          </div>
+
+          <button onclick="toggleCheckin('${a.id}', ${!a.checkin_realizado})"
+            class="btn-checkin ${a.checkin_realizado ? 'done' : 'todo'} text-base px-6 py-3">
+            ${a.checkin_realizado ? 'Presente' : 'Marcar Presença'}
+          </button>
         </div>
-      `).join('')
-      : `<div class="text-foam/30 font-heading tracking-widest text-sm text-center col-span-full py-8">Nenhum interesse registrado ainda.</div>`;
-    return;
-  }
+      `).join('');
+    }
 
-  const { data } = await sb.from('aluguel_canoas').select('*, inscrito:inscritos(nome_completo, email, estado)').eq('ativo', true);
-  if (!data?.length) {
-    el.innerHTML = `<div class="text-foam/30 col-span-full text-center py-8 font-heading tracking-widest">Nenhum registro.</div>`;
-    return;
-  }
-  el.innerHTML = data.map(r => `
-    <div class="stat-card">
-      <span class="badge ${r.tipo === 'oferta' ? 'badge-pago' : 'badge-pendente'} mb-3">${r.tipo === 'oferta' ? '🤝 Oferta' : '🔍 Procura'}</span>
-      <p class="font-heading font-700 text-foam">${r.inscrito?.nome_completo || 'Anônimo'}</p>
-      <p class="text-foam/50 text-sm mt-1">${r.mensagem || '—'}</p>
-      <a href="mailto:${r.contato}" class="text-wave text-sm font-heading hover:underline mt-2 block">${r.contato}</a>
-    </div>
-  `).join('');
-}
+    async function toggleCheckin(id, novoStatus) {
+      if (IS_DEMO) {
+        const atleta = todosAtletas.find(a => a.id === id);
+        if (atleta) {
+          atleta.checkin_realizado = novoStatus;
+          atleta.hora_checkin = novoStatus ? new Date().toISOString() : null;
+        }
+        filtrarAtletas();
+        renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
+        showToast(novoStatus ? 'Check-in realizado!' : 'Check-in desfeito');
+        await carregarDashboard();
+        return;
+      }
 
-// ── EXPORTAÇÕES ────────────────────────────────────────────
-function exportarCSV() {
-  const filtrados = todosAtletas;
-  const cabecalho = ['Nº Peito','Nome','CPF','Categoria','Gênero','Clube','Estado','Camiseta','Status','Check-in','E-mail'];
-  const linhas = filtrados.map(a => [
-    a.numero_peito ?? '',
-    a.nome_completo,
-    a.cpf,
-    a.categoria?.nome || '',
-    a.genero === 'M' ? 'Masculino' : 'Feminino',
-    a.clube || 'Independente',
-    a.estado || '',
-    a.tamanho_camiseta,
-    a.status_pagamento,
-    a.checkin ? 'Sim' : 'Não',
-    a.email,
-  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+      const { error } = await sb.from('inscritos')
+        .update({ checkin_realizado: novoStatus, hora_checkin: novoStatus ? new Date().toISOString() : null })
+        .eq('id', id);
 
-  const csv = [cabecalho.join(','), ...linhas].join('\n');
-  download(csv, 'atletas_v1rj_2026.csv', 'text/csv;charset=utf-8;');
-  showToast('📥 CSV exportado com sucesso!');
-}
+      if (error) { console.error(error); showToast('Erro ao atualizar check-in'); return; }
 
-function exportarLargada(modo) {
-  if (modo === 'print') {
-    window.print();
-    return;
-  }
-  const cabecalho = ['Nº Peito','Nome Completo','Categoria','Gênero','Clube','Estado','Check-in'];
-  const linhas = listaLargada.map(a => [
-    a.numero_peito,
-    a.nome_completo,
-    a.categoria?.nome || a.categoria || '',
-    a.genero === 'M' ? 'Masculino' : 'Feminino',
-    a.clube || 'Independente',
-    a.estado || '',
-    a.checkin ? 'Sim' : 'Não',
-  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+      const atleta = todosAtletas.find(a => a.id === id);
+      if (atleta) { atleta.checkin_realizado = novoStatus; atleta.hora_checkin = novoStatus ? new Date().toISOString() : null; }
 
-  const csv = [cabecalho.join(','), ...linhas].join('\n');
-  download(csv, 'lista_largada_v1rj_2026.csv', 'text/csv;charset=utf-8;');
-  showToast('📥 Lista de largada exportada!');
-}
+      filtrarAtletas();
+      renderCheckin(todosAtletas.filter(a => a.status_pagamento === 'pago'));
+      await carregarDashboard();
+      showToast(novoStatus ? 'Check-in realizado!' : 'Check-in desfeito');
+    }
 
-function download(content, filename, type) {
-  const blob = new Blob(['\uFEFF' + content], { type });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
-  URL.revokeObjectURL(url);
-}
+    // ─────────────────────────────────────────────────────────
+    // LARGADA
+    // ─────────────────────────────────────────────────────────
+    async function carregarLargada() {
+      if (IS_DEMO) {
+        listaLargada = getMockAtletas()
+          .filter(a => a.status_pagamento === 'pago')
+          .sort((a,b) => (a.numero_peito||999) - (b.numero_peito||999));
+      } else {
+        const { data, error } = await sb
+          .from('inscritos')
+          .select('numero_peito, nome_completo, genero, clube, estado, checkin_realizado, status_pagamento, categoria:categorias(nome)')
+          .eq('status_pagamento', 'pago')
+          .order('numero_peito', { ascending: true });
 
-// ── TOAST ──────────────────────────────────────────────────
-let toastTimer;
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
-}
-</script>
+        if (error) { console.error(error); return; }
+        listaLargada = data || [];
+      }
+
+      const tbody = document.getElementById('tabela-largada');
+      tbody.innerHTML = (listaLargada || []).map(a => `
+        <tr>
+          <td class="font-display text-2xl text-sand">${a.numero_peito ?? '—'}</td>
+          <td class="font-body font-500">${a.nome_completo}</td>
+          <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#00B4D8;">${a.categoria?.nome || a.categoria || '—'}</span></td>
+          <td>${a.genero === 'M' ? '♂' : '♀'}</td>
+          <td class="text-foam/50 text-sm">${a.clube || 'Independente'}</td>
+          <td class="font-heading text-foam/50">${a.estado || '—'}</td>
+          <td>${a.checkin_realizado ? '<span class="badge badge-pago">Sim</span>' : '<span class="badge badge-pendente">Pendente</span>'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // RESULTADOS
+    // ─────────────────────────────────────────────────────────
+    function getDataProvaISODate() {
+      return (cfgEvento?.data_prova) || '2026-09-21';
+    }
+
+    function setResDataBaseHint(){
+      const d = getDataProvaISODate();
+      document.getElementById('res-data-base').textContent = d;
+    }
+
+    function buildDateTimeISO(hms) {
+      if (!hms) return null;
+      const parts = String(hms).trim().split(':').map(Number);
+      if (parts.some(Number.isNaN)) return null;
+
+      const h = parts[0];
+      const m = parts[1] ?? 0;
+      const s = parts[2] ?? 0;
+
+      if (h < 0 || h > 23 || m < 0 || m > 59 || s < 0 || s > 59) return null;
+
+      const d = getDataProvaISODate();
+      return `${d}T${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}-03:00`;
+    }
+
+    function fmtTimeFromISO(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mm = String(d.getMinutes()).padStart(2,'0');
+      const ss = String(d.getSeconds()).padStart(2,'0');
+      return `${hh}:${mm}:${ss}`;
+    }
+
+    async function carregarResultados() {
+      setResDataBaseHint();
+
+      if (IS_DEMO) {
+        const base = `${getDataProvaISODate()}T08:00:00-03:00`;
+        resultados = getMockAtletas()
+          .filter(a => a.status_pagamento === 'pago')
+          .map((a, i) => {
+            const larg = base;
+            const chegada = `${getDataProvaISODate()}T09:${String(10+i).padStart(2,'0')}:00-03:00`;
+            return {
+              id: a.id,
+              numero_peito: a.numero_peito,
+              nome_completo: a.nome_completo,
+              genero: a.genero,
+              categoria: a.categoria?.nome,
+              tempo_largada: larg,
+              tempo_chegada: chegada,
+              tempo_oficial: null, // demo: sem trigger
+              status_pagamento: a.status_pagamento,
+            };
+          });
+        filtrarResultados();
+        return;
+      }
+
+      const { data, error } = await sb
+        .from('inscritos')
+        .select('id, numero_peito, nome_completo, genero, status_pagamento, tempo_largada, tempo_chegada, tempo_oficial, categoria:categorias(nome)')
+        .eq('status_pagamento', 'pago')
+        .order('numero_peito', { ascending: true });
+
+      if (error) {
+        console.error(error);
+        showToast('Erro ao carregar resultados');
+        return;
+      }
+
+      resultados = (data || []).map(r => ({
+        ...r,
+        categoria: r.categoria?.nome || '—',
+      }));
+
+      filtrarResultados();
+    }
+
+    function filtrarResultados() {
+      const cat = document.getElementById('res-filtro-categoria').value;
+      const gen = document.getElementById('res-filtro-genero').value;
+      const busca = document.getElementById('res-busca').value.toLowerCase().trim();
+
+      resultadosFiltrados = (resultados || []).filter(r => {
+        const matchCat = !cat || (r.categoria === cat);
+        const matchGen = !gen || (r.genero === gen);
+        const matchBusca =
+          !busca ||
+          String(r.numero_peito || '').includes(busca) ||
+          (r.nome_completo || '').toLowerCase().includes(busca);
+
+        return matchCat && matchGen && matchBusca;
+      });
+
+      document.getElementById('res-hint').textContent = `${resultadosFiltrados.length} atleta(s)`;
+      renderResultados(resultadosFiltrados);
+    }
+
+    function renderResultados(lista) {
+      const tbody = document.getElementById('tabela-resultados');
+
+      if (!lista.length) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-foam/30 py-8 font-heading tracking-widest">Sem resultados para exibir.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = lista.map(r => `
+        <tr>
+          <td class="font-display text-xl text-sand">${r.numero_peito ?? '—'}</td>
+          <td class="font-body font-500">${r.nome_completo}</td>
+          <td><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:#00B4D8;">${r.categoria || '—'}</span></td>
+          <td class="font-heading text-sm">${r.genero === 'M' ? '♂ Masc' : '♀ Fem'}</td>
+
+          <td>
+            <input class="filter-input" style="width:110px" placeholder="08:00:00"
+              value="${fmtTimeFromISO(r.tempo_largada)}"
+              id="rl-${r.id}" />
+          </td>
+
+          <td>
+            <input class="filter-input" style="width:110px" placeholder="09:12:33"
+              value="${fmtTimeFromISO(r.tempo_chegada)}"
+              id="rc-${r.id}" />
+          </td>
+
+          <td class="font-heading text-sm text-foam/70">
+            ${r.tempo_oficial ?? '—'}
+          </td>
+
+          <td style="white-space:nowrap;">
+            <button class="btn-export" style="padding:7px 14px" onclick="salvarTempo('${r.id}')">Salvar</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function salvarTempo(inscritoId) {
+      const largadaStr = document.getElementById(`rl-${inscritoId}`).value.trim();
+      const chegadaStr = document.getElementById(`rc-${inscritoId}`).value.trim();
+
+      const tempo_largada = buildDateTimeISO(largadaStr);
+      const tempo_chegada = buildDateTimeISO(chegadaStr);
+
+      if (!tempo_largada || !tempo_chegada) {
+        showToast('Preencha largada e chegada em HH:MM:SS');
+        return;
+      }
+
+      if (new Date(tempo_chegada) < new Date(tempo_largada)) {
+        showToast('Chegada não pode ser antes da largada');
+        return;
+      }
+
+      if (IS_DEMO) {
+        showToast('Salvo (demo)');
+        return;
+      }
+
+      const { error } = await sb
+        .from('inscritos')
+        .update({ tempo_largada, tempo_chegada })
+        .eq('id', inscritoId);
+
+      if (error) {
+        console.error(error);
+        showToast('Erro ao salvar tempo');
+        return;
+      }
+
+      showToast('Tempo salvo');
+      await carregarResultados(); // recarrega para pegar tempo_oficial calculado
+    }
+
+    function aplicarLargadaGlobalPrompt() {
+      const v = prompt('Digite o horário de largada global (HH:MM:SS):', '08:00:00');
+      if (!v) return;
+
+      const iso = buildDateTimeISO(v);
+      if (!iso) { showToast('Horário inválido'); return; }
+
+      // aplica só nos inputs da UI (para acelerar operação)
+      (resultadosFiltrados || []).forEach(r => {
+        const el = document.getElementById(`rl-${r.id}`);
+        if (el) el.value = v;
+      });
+
+      showToast('Largada global aplicada na tela (clique Salvar em cada atleta, ou exporte/continue).');
+    }
+
+    function exportarResultadosCSV() {
+      const lista = resultadosFiltrados || [];
+
+      const cabecalho = ['Nº Peito','Nome','Categoria','Gênero','Largada','Chegada','Tempo oficial'];
+      const linhas = lista.map(r => {
+        const row = [
+          r.numero_peito ?? '',
+          r.nome_completo ?? '',
+          r.categoria ?? '',
+          r.genero ?? '',
+          fmtTimeFromISO(r.tempo_largada),
+          fmtTimeFromISO(r.tempo_chegada),
+          r.tempo_oficial ?? '',
+        ];
+        return row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
+      });
+
+      const csv = [cabecalho.join(','), ...linhas].join('\n');
+      download(csv, 'resultados_v1rj_2026.csv', 'text/csv;charset=utf-8;');
+      showToast('Resultados exportados!');
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // ALUGUEL (mantém compatível com seu MVP; usa tabela aluguel_canoas se existir)
+    // ─────────────────────────────────────────────────────────
+    async function carregarAluguel() {
+      const el = document.getElementById('aluguel-lista');
+
+      if (IS_DEMO) {
+        const interessados = getMockAtletas().filter(a => a.aluguel_canoa);
+        el.innerHTML = interessados.length
+          ? interessados.map(a => `
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg" style="background:rgba(255,107,53,.15)">🛶</div>
+                <div>
+                  <p class="font-heading font-700 text-foam leading-tight">${a.nome_completo}</p>
+                  <p class="font-body text-xs text-foam/40">${a.categoria?.nome || '—'} · ${a.estado}</p>
+                </div>
+              </div>
+              <a href="mailto:${a.email}" class="text-wave text-sm font-heading hover:underline">${a.email}</a>
+            </div>
+          `).join('')
+          : `<div class="text-foam/30 font-heading tracking-widest text-sm text-center col-span-full py-8">Nenhum interesse registrado ainda.</div>`;
+        return;
+      }
+
+      // tenta buscar interessados diretamente da tabela inscritos (se você ainda não tem aluguel_canoas)
+      const { data, error } = await sb
+        .from('inscritos')
+        .select('nome_completo, email, estado, genero, categoria:categorias(nome), clube')
+        .eq('status_pagamento', 'pago');
+
+      if (error) { console.error(error); el.innerHTML = `<div class="text-foam/30 col-span-full text-center py-8 font-heading tracking-widest">Erro ao carregar.</div>`; return; }
+
+      // como sua tabela "inscritos" não traz aluguel_canoa nesse schema, mostramos placeholder
+      el.innerHTML = `
+        <div class="text-foam/30 font-heading tracking-widest text-sm text-center col-span-full py-8">
+          Módulo de aluguel: conecte a tabela/coluna específica (ex.: aluguel_canoas) para listar ofertas/procuras.
+        </div>
+      `;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // EXPORTAÇÕES
+    // ─────────────────────────────────────────────────────────
+    function exportarCSV() {
+      const filtrados = todosAtletas;
+
+      const cabecalho = ['Nº Peito','Nome','CPF','Categoria','Gênero','Clube','Estado','Camiseta','Status','Check-in','E-mail'];
+      const linhas = filtrados.map(a => [
+        a.numero_peito ?? '',
+        a.nome_completo ?? '',
+        a.cpf ?? '',
+        a.categoria?.nome || a.categoria || '',
+        a.genero === 'M' ? 'Masculino' : 'Feminino',
+        a.clube || 'Independente',
+        a.estado || '',
+        a.tamanho_camiseta || '',
+        a.status_pagamento || '',
+        a.checkin_realizado ? 'Sim' : 'Não',
+        a.email || '',
+      ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+
+      const csv = [cabecalho.join(','), ...linhas].join('\n');
+      download(csv, 'atletas_v1rj_2026.csv', 'text/csv;charset=utf-8;');
+      showToast('CSV exportado com sucesso!');
+    }
+
+    function exportarLargada(modo) {
+      if (modo === 'print') { window.print(); return; }
+
+      const cabecalho = ['Nº Peito','Nome Completo','Categoria','Gênero','Clube','Estado','Check-in'];
+      const linhas = (listaLargada || []).map(a => [
+        a.numero_peito ?? '',
+        a.nome_completo ?? '',
+        a.categoria?.nome || a.categoria || '',
+        a.genero === 'M' ? 'Masculino' : 'Feminino',
+        a.clube || 'Independente',
+        a.estado || '',
+        a.checkin_realizado ? 'Sim' : 'Não',
+      ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+
+      const csv = [cabecalho.join(','), ...linhas].join('\n');
+      download(csv, 'lista_largada_v1rj_2026.csv', 'text/csv;charset=utf-8;');
+      showToast('Lista de largada exportada!');
+    }
+
+    function download(content, filename, type) {
+      const blob = new Blob(['\uFEFF' + content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // TOAST
+    // ─────────────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+    }
+  </script>
 </body>
 </html>

@@ -936,12 +936,7 @@ document.getElementById('form').addEventListener('submit',async function(e){
     showAlrt('ok','Inscrição registrada!','Pagamento será habilitado assim que a função de checkout estiver configurada.');
     btn.disabled=false;submitting=false;
 
-  }catch(err){
-    console.error('[Checkout]',err);
-    document.getElementById('ldr').classList.remove('on');
-    showAlrt('err','Erro na inscrição',err.message || 'Tente novamente.');
-    btn.disabled=false;submitting=false;
-  }
+ 
 });
 
 /* Boot */

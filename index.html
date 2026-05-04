@@ -429,47 +429,51 @@ footer{background:var(--ocean-deep);border-top:1px solid rgba(0,194,212,.09);pad
     </div>
 
   </div>
+  
 <!---Previsão--->  
-<section id="previsao" style="background: var(--ocean-deep); padding: 80px 24px; position: relative; border-top: 1px solid rgba(0, 194, 212, 0.1);">
-    <div style="max-width: 1100px; margin: 0 auto;">
+  
+<section id="previsao" style="background: var(--ocean-deep); padding: 76px 24px; border-top: 1px solid rgba(0, 194, 212, 0.05);">
+  <div style="max-width: 880px; margin: 0 auto;">
+    
+    <div style="text-align: center; margin-bottom: 40px;">
+      <h2 class="st">Condições do Mar</h2>
+      <div class="cbar" style="margin: 15px auto 20px;"></div>
+      <p style="max-width: 600px; margin: 0 auto; font-size: 1rem; line-height: 1.6; color: rgba(238,249,255,0.7);">
+        Analise a previsão de ventos, rajadas e ondulação para a área da prova em Niterói.
+      </p>
+    </div>
+
+    <div style="background: var(--ocean-mid); border: 1px solid rgba(0, 194, 212, 0.15); border-radius: 12px; padding: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
       
-      <div style="text-align: center; margin-bottom: 40px;">
-        <p style="font-size: .85rem; letter-spacing: 3px; text-transform: uppercase; color: var(--wave); font-weight: 700; margin-bottom: 10px; font-family: 'Nunito Sans', sans-serif;">
-          Monitoramento em Tempo Real
-        </p>
-        <h2 style="font-family: 'Teko', sans-serif; font-size: 2.2rem; color: var(--sand); line-height: 1.1; text-transform: uppercase; margin-bottom: 15px;">
-          Condições do Mar
-        </h2>
-        <div style="width: 60px; height: 3px; background: var(--coral); margin: 0 auto 20px;"></div>
-        <p style="max-width: 600px; margin: 0 auto; font-size: 1.05rem; line-height: 1.6; color: rgba(238,249,255,0.7);">
-          Analise a previsão de ventos, rajadas e ondulação para a área da prova em Niterói. A estratégia de remada começa aqui.
-        </p>
+      <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #060F1E;">
+        <iframe 
+          src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=default&metricWind=default&zoom=11&overlay=wind&product=ecmwf&level=surface&lat=-22.925&lon=-43.115&detailLat=-22.883&detailLon=-43.128&marker=true&pushId=widget-embed" 
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+          allowfullscreen>
+        </iframe>
       </div>
 
-      <div style="background: var(--ocean-mid); border: 1px solid rgba(0, 194, 212, 0.2); border-radius: 24px; padding: 15px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
-        
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 16px; background: #060F1E;">
-          <iframe 
-            src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=default&metricWind=default&zoom=11&overlay=wind&product=ecmwf&level=surface&lat=-22.925&lon=-43.115&detailLat=-22.883&detailLon=-43.128&marker=true&pushId=widget-embed" 
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
-            allowfullscreen>
-          </iframe>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 10px 5px; flex-wrap: wrap; gap: 15px;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <div style="width: 8px; height: 8px; background: #28a745; border-radius: 50%; box-shadow: 0 0 10px #28a745;"></div>
-            <span style="font-size: 0.8rem; color: rgba(238,249,255,0.4); font-weight: 600; text-transform: uppercase;">Dados atualizados via Windy</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 8px 4px; flex-wrap: wrap; gap: 15px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 7px; height: 7px; background: #28a745; border-radius: 50%; box-shadow: 0 0 8px #28a745;"></div>
+            <span style="font-size: 0.75rem; color: var(--wave); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+              Monitoramento em tempo real
+            </span>
           </div>
-          
-          <a href="https://www.windy.com/-22.883/-43.128?gust,-22.951,-43.128,12" target="_blank" 
-             style="display: inline-block; background: var(--wave); color: var(--ocean-deep); font-weight: 700; font-family: 'Teko', sans-serif; font-size: 1.3rem; padding: 10px 30px; border-radius: 8px; text-decoration: none; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;">
-            Mapa Detalhado
-          </a>
+          <span style="font-size: 0.65rem; color: rgba(238,249,255,0.3); padding-left: 15px;">
+            Dados atualizados via Windy.com
+          </span>
         </div>
+        
+        <a href="https://www.windy.com/-22.883/-43.128?gust,-22.951,-43.128,12" target="_blank" 
+           style="display: inline-block; background: var(--wave); color: var(--ocean-deep); font-weight: 700; font-family: 'Teko', sans-serif; font-size: 1.1rem; padding: 6px 20px; border-radius: 4px; text-decoration: none; transition: all 0.2s ease; text-transform: uppercase;">
+          Mapa Completo
+        </a>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
 <!-- CATEGORIAS -->
 <section style="background:#060F1E;padding:76px 24px;" id="categorias-sec">
